@@ -18,6 +18,8 @@ class Source():
     sourceType = 'point'
     sourceLocation = None
     sourceDirection = None
+    population = None
+    particle = "electron"
     E = None
     def __init__(self):
         return
@@ -33,6 +35,12 @@ class Source():
 
     def setDirection(self,direction = np.array([0.,0.,1.])):
         self.sourceDirection = direction
+
+    def setPopulation(self, population=10):
+        self.population = population
+
+    def setParticleType(self,particleType = 'electron'):
+        self.partice = particleType
 
     def setEnergy(self,energy=1000):
         self.E = energy

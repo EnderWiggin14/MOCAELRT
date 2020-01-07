@@ -171,9 +171,6 @@ class Particle(metaclass=abc.ABCMeta):
     def getCurrentCell(self):
         return self.curCell
 
-    # def updateCurrentCell(self,geoManager):
-    #     self.curCell = geoManager
-
     def getMaterial(self):
         return self.curCell.matID
 
