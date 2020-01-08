@@ -5,6 +5,8 @@ Created on Tue Nov 12 11:34:53 2019
 @author: Michael Vander Wal
 """
 import numpy as np
+import Particle
+import Electron
 
 class SourceManager():
     sourceList = None
@@ -13,6 +15,15 @@ class SourceManager():
 
     def addSource(self,source):
         self.sourceList.append(source)
+
+    def generateParticles(self):
+        particles = []
+        for i in self.sourceList:
+                if i.particle == "electron":
+                    for j in range(i.population):
+                        particles.append(Electron.Electron(loc=i.locationGenerator(),direc=i.directionGenerator,enrg=i.energyGenerator()))
+
+        return particles
 
 class Source():
     sourceType = 'point'
@@ -44,6 +55,12 @@ class Source():
 
     def setEnergy(self,energy=1000):
         self.E = energy
+
+    def energyGenerator(self):
+        if type(self.E) == 'int' or type(self.E) == 'float':
+            return self.E
+        elif type(self.E) == 'str':
+            return self.E # temporary value, itended to be used for distributions
 
 if __name__=="__main__":
     a = SourceManager()

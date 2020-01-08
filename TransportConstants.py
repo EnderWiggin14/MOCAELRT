@@ -4,7 +4,7 @@ Created on Mon Sep 30 14:30:31 2019
 
 @author: Michael Vander Wal
 """
-
+import numpy as np
 
 _eMass = 9.10938356e-28
 _c = 2.99792458e10
