@@ -5,11 +5,10 @@ Created on Tue Nov 12 11:34:53 2019
 @author: Michael Vander Wal
 """
 import numpy as np
-import Particle
 import Electron
 
 class SourceManager():
-    sourceList = None
+    sourceList = []
     def __init__(self):
         return
 
@@ -57,10 +56,28 @@ class Source():
         self.E = energy
 
     def energyGenerator(self):
-        if type(self.E) == 'int' or type(self.E) == 'float':
+        if isinstance(self.E,(int,float)):
             return self.E
         elif type(self.E) == 'str':
-            return self.E # temporary value, itended to be used for distributions
+            return 1000 # temporary value, itended to be used for distributions
+        else:
+            raise Exception(str(type(self.E))+" is not a valid data type for source energy \'Source.E\'")
+
+    def locationGenerator(self):
+        if isinstance(self.sourceLocation,np.ndarray):
+            return self.sourceLocation
+        elif isinstance(self.sourceLocation,str):
+            return np.array([0.,0.,0.]) # temporary value, intended to be used for distributions
+        else:
+            raise Exception(str(type(self.sourceLocation))+" is not a valid data type for sourceLocation")
+
+    def directionGenerator(self):
+        if isinstance(self.sourceDirection,np.ndarray):
+            return self.sourceLocation
+        elif isinstance(self.sourceDirection,str):
+            return np.array([0.,0.,1.]) # temporary value, intended to be used for distributions
+        else:
+            raise Exception(str(type(self.sourceDirection))+" is not a valid data type for sourceDirection")
 
 if __name__=="__main__":
     a = SourceManager()
@@ -68,5 +85,10 @@ if __name__=="__main__":
     b.setLocation()
     b.setEnergy()
     b.setDirection()
-    print(b.sourceType, '\t', b.sourceLocation,'\t',b.sourceDirection,'\t',b.E)
+    b.setParticleType()
+    b.setPopulation()
+    print(b.sourceType, '\t', b.particle, '\t', b.sourceLocation,'\t',b.sourceDirection,'\t',b.E, '\t', b.population)
+    a.addSource(b)
+    parts = a.generateParticles()
+    print("lenght of list of particles :" , len(parts))
     print("Successfully Completed \a")
