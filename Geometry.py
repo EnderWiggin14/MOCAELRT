@@ -2,7 +2,7 @@
 """
 Created on Tue Nov 12 10:45:49 2019
 
-@author: Michael
+@author: Michael Vander Wal
 """
 import numpy as np
 class GeometryManager():

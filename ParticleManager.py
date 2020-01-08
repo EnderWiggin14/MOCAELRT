@@ -9,27 +9,17 @@ Created on Sun Nov 10 19:06:28 2019
 import Particle
 import TransportConstants
 import Electron
+import Source
 import numpy as np
 
 
 class ParticleManager:
 
-    nParticles = None
     allParticles = []
     geoManager = None
 
-    def __init__(self,geoMan,types = ['electron'],nPart = [1]):
-        self.nParticles = sum(nPart)
+    def __init__(self,geoMan):
         self.geoManager = geoMan
-        for i in types:
-            if i == 'electron':
-                for j in range(nPart[0]):
-                    self.allParticles.append(Electron.Electron(loc=[0.,0.,0.],direc=[0.,0.,1.],enrg=j+1))
-            if i == 'proton':
-                pass
-            if i == 'neutron':
-                pass
-
         return
 
     def addParticles(self,pType,nPart,source=None):
@@ -51,5 +41,12 @@ class ParticleManager:
         return
 
 
+def main():
+    partMan = ParticleManager()
+    return
+
+
+if __name__ == '__main__':
+    main()
             #physics
             #cutoff point
