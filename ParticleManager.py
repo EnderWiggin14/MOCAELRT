@@ -10,6 +10,7 @@ import Particle
 import TransportConstants
 import Electron
 import Source
+import Geometry
 import numpy as np
 
 
@@ -22,8 +23,8 @@ class ParticleManager:
         self.geoManager = geoMan
         return
 
-    def addParticles(self,pType,nPart,source=None):
-        if source is None:
+    def addParticles(self,pType=None,nPart=None,source=None):
+        if not source is None:
             self.allParticles+=source.generateParticles()
         else:
             if pType == 'electron':
@@ -42,8 +43,20 @@ class ParticleManager:
 
 
 def main():
-    partMan = ParticleManager()
-    return
+    geoMan = Geometry.GeometryManager()
+    partMan = ParticleManager(geoMan)
+    a = Source.SourceManager()
+    b = Source.Source()
+    b.setLocation()
+    b.setEnergy()
+    b.setDirection()
+    b.setParticleType()
+    b.setPopulation()
+    a.addSource(b)
+    partMan.addParticles(source=a)
+    print("length of list of all particles :",len(partMan.allParticles))
+    print(type(partMan.allParticles[0]))
+    print("Successfully completed \a")
 
 
 if __name__ == '__main__':

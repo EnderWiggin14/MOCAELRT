@@ -26,8 +26,8 @@ class Particle(metaclass=abc.ABCMeta):
 
     def __init__(self,species='electron',loc = [0.,0.,0.], direc = [0.,0.,1.], enrg = 100.,pid = -1):
         self.particleType = self.enumMap(species)
-        self.loc = loc
-        self.direc = direc
+        self.loc = np.array(loc)
+        self.direc = np.array(direc)
         self.E = self.energyConvert(enrg)
         self.weight = 1.
         self.ID = pid

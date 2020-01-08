@@ -20,7 +20,7 @@ class SourceManager():
         for i in self.sourceList:
                 if i.particle == "electron":
                     for j in range(i.population):
-                        particles.append(Electron.Electron(loc=i.locationGenerator(),direc=i.directionGenerator,enrg=i.energyGenerator()))
+                        particles.append(Electron.Electron(loc=i.locationGenerator(),direc=i.directionGenerator(),enrg=i.energyGenerator()))
 
         return particles
 
