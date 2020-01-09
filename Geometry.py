@@ -40,7 +40,7 @@ class Geometry:
     dim = 3
     regionID = None
     internalHashMap = {-1:'Placeholder'}
-    binEdges = []
+    # binEdges = []
     iEdgesFine = None
     jEdgesFine = None
     kEdgesFine = None
@@ -57,18 +57,26 @@ class Geometry:
             for i in range(0,iEdgesCoarse.size-1):
                 self.iEdgesFine = np.hstack((self.iEdgesFine,np.linspace(iEdgesCoarse[i],iEdgesCoarse[i+1],fineI[i]+1)[1:]))
             # print(self.iEdgesFine)
+        else:
+            self.iEdgesFine = iEdgesCoarse
+
 
         if not fineJ is None:
             self.jEdgesFine = np.array([jEdgesCoarse[0]])
             for i in range(0,jEdgesCoarse.size-1):
                 self.jEdgesFine = np.hstack((self.jEdgesFine,np.linspace(jEdgesCoarse[i],jEdgesCoarse[i+1],fineJ[i]+1)[1:]))
             # print(self.jEdgesFine)
+        else:
+            self.jEdgesFine = jEdgesCoarse
 
         if not fineK is None:
             self.kEdgesFine = np.array([kEdgesCoarse[0]])
             for i in range(0,kEdgesCoarse.size-1):
                 self.kEdgesFine = np.hstack((self.kEdgesFine,np.linspace(kEdgesCoarse[i],kEdgesCoarse[i+1],fineK[i]+1)[1:]))
             # print(self.kEdgesFine)
+        else:
+            self.kEdgesFine = iEdgesCoarse
+
         # self.makeCellList()
         self.mesh = np.zeros((self.iEdgesFine.size-1,self.jEdgesFine.size-1,self.kEdgesFine.size-1),dtype='longlong')
         self.makeCellMap()

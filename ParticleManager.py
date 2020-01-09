@@ -51,7 +51,7 @@ def main():
     b.setEnergy()
     b.setDirection()
     b.setParticleType()
-    b.setPopulation()
+    b.setPopulation(100)
     a.addSource(b)
     partMan.addParticles(source=a)
     print("length of list of all particles :",len(partMan.allParticles))

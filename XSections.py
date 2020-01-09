@@ -24,7 +24,7 @@ class XSection():
             return self.interp(energy) #need to change to a function in future
         return
 
-    def interp(self,xStar):
+    def interp(self,xStar): # should replace while loop with numpy.searchsort()
         i = 0
         length = len(self.energyValues)
         while i < length and self.energyValues[i] <= xStar:

@@ -18,6 +18,7 @@ class Particle(metaclass=abc.ABCMeta):
     prevLoc = None
     direc = None
     E = None
+    prevE = None
     wgt = None
     ID = -1
     track = True
@@ -70,6 +71,7 @@ class Particle(metaclass=abc.ABCMeta):
         newLoc = self.intersectionHandler(self.loc,distance,geoManager)
         self.prevLoc = self.loc
         self.loc = newLoc
+        # will need to add an energy update step for inelastic scattering
         self.matID = self.getMaterial
         scatterAngle = self.sampleScatterAngle()
         gammaAngle = np.random.uniform(0,np.pi)
