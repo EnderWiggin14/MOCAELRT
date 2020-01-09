@@ -104,10 +104,11 @@ def generateElasticElectronData(Z,):
     for i in range(0,nSteps+1):
         crossSections.append(electronElastXS(energyEV[i],Z))
 
+    totalCrossSections = [energyEV,crossSections]
 
-    E = [100,200,300,400,500,700]
+
     differentialXSections = []
-    for i in range(0,6):
-        output = diffXS(E[i],Z)
+    for i in range(len(energyEV)):
+        output = diffXS(energyEV[i],Z)
         differentialXSections.append(output)
-    return crossSections,differentialXSections
+    return totalCrossSections,differentialXSections
