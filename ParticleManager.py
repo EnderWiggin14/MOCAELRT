@@ -19,9 +19,11 @@ class ParticleManager:
     allParticles = []
     geoManager = None
 
-    def __init__(self,geoMan):
-        self.geoManager = geoMan
+    def __init__(self):
         return
+
+    def addGeometry(self,geoMan):
+        self.geoManager = geoMan
 
     def addParticles(self,pType=None,nPart=None,source=None):
         if not source is None:
@@ -44,7 +46,8 @@ class ParticleManager:
 
 def main():
     geoMan = Geometry.GeometryManager()
-    partMan = ParticleManager(geoMan)
+    partMan = ParticleManager()
+    partMan.addGeometry(geoMan)
     a = Source.SourceManager()
     b = Source.Source()
     b.setLocation()
