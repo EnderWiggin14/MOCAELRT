@@ -18,12 +18,16 @@ class ParticleManager:
 
     allParticles = []
     geoManager = None
+    matManager = None
 
     def __init__(self):
         return
 
     def addGeometry(self,geoMan):
         self.geoManager = geoMan
+
+    def addMaterials(self,matMan):
+        self.matManager = matMan
 
     def addParticles(self,pType=None,nPart=None,source=None):
         if not source is None:
@@ -40,7 +44,7 @@ class ParticleManager:
 
     def transportParticles(self):
         for i in self.allParticles:
-            i.transport(self.geoManager)
+            i.transport(self.geoManager,self.matManager)
         return
 
 

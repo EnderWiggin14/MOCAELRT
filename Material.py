@@ -6,15 +6,17 @@ Created on Tue Nov 12 10:08:24 2019
 """
 import numpy as np
 import Distribution
+import DataGenerators
+import XSections
 
 
 class MaterialManager():
-    matDict = {-1,'placeHolder'}
+    matDict = {-1:'placeHolder'}
     def __init__(self):
         return
 
     def addMaterial(self,mat):
-        if self.matDict[mat.matID] is None:
+        if not mat.matID in self.matDict.keys():
             self.matDict[mat.matID] = mat
 
             if not self.matDict[-1] is None:
@@ -30,14 +32,19 @@ class Material():
     electronDiffCrossHandle = None
     electronTotalCrossHandle = None
     name = None
+    zNumber = None
     atomicDensity = 1.0
-    def __init__(self,matID,angleDistHandle,totalCrossHandle):
+    def __init__(self,matID):
         self.matID = matID
-        self.diffCrossHandle = angleDistHandle
-        self.totalCrossHandle = totalCrossHandle
-        self.setName()
         return
-    def composition(self):
+
+    def setElectronScatterDistribution(self,handle):
+        self.diffCrossHandle = handle
+
+    def setElectronTotalXSHandle(self,handle):
+        self.totalCrossHandle = handle
+
+    def getComposition(self):
         return self.comp
 
     def setName(self,name=None):
@@ -45,6 +52,9 @@ class Material():
             self.name=str(self.matID)
         else:
             self.name = name
+
+    def setZNumber(self,z):
+        self.zNumber = z
 
     def setComposition(self,comp):
         # format is [ [z-IDs] , [number density] ]

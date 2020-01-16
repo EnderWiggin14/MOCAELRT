@@ -13,7 +13,10 @@ import Distribution
 import Geometry
 import Material
 import Source
+import DataGenerators
 import TransportConstants
+import XSections
+from functools import partial
 
 
 
@@ -22,20 +25,31 @@ def main():
     # Step 1: Initialize ParticleManager
     PM = ParticleManager()
 
-    # Step 2: Generate Distributions
+    # Step 2: Generate Data
+    # This step will hopefully not be explicityly needed in the future
+    totalXS,scatterXS = DataGenerators.generateElasticElectronData(10)
+    xsec = XSections.XSection(totalXS[1],totalXS[0])
+    diffXS = partial(Distribution.diffElasticElectronXS,10)
 
-    # Step 2: Add Materials
+
+    # Step 3: Add Materials
     matMan = Material.MaterialManager()
     mat = Material.Material(14)
+    mat.setZNumber(10)
+    mat.setElectronScatterDistribution(diffXS)
+    mat.setElectronTotalXSHandle(xsec.getXSection)
+    matMan.addMaterial(mat)
 
-    # Step 3: Add Geometry
+    PM.addMaterials(matMan)
+    # Step 4: Add Geometry
     geoMan = Geometry.GeometryManager()
     geo = Geometry.Geometry()
+    geo.setMaterial(14)
     geoMan.addGeometry(geo)
 
     PM.addGeometry(geoMan)
 
-    # Step 4: Add Source Particles
+    # Step 5: Add Source Particles
     soMan = Source.SourceManager()
     so = Source.Source()
     so.setLocation()
@@ -46,9 +60,6 @@ def main():
     soMan.addSource(so)
 
     PM.addParticles(source = soMan)
-
-
-
 
     return
 

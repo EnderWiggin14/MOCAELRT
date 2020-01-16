@@ -26,7 +26,10 @@ class Particle(metaclass=abc.ABCMeta):
     curCell = None
 
     def __init__(self,species='electron',loc = [0.,0.,0.], direc = [0.,0.,1.], enrg = 100.,pid = -1):
-        self.particleType = self.enumMap(species)
+        if isinstance(species,str):
+            self.particleType = self.enumMap(species)
+        else:
+            self.particleType = species
         self.loc = np.array(loc)
         self.direc = np.array(direc)
         self.E = self.energyConvert(enrg)
@@ -43,16 +46,21 @@ class Particle(metaclass=abc.ABCMeta):
 
         return switch.get(toMap,'Invalid Particle')
 
-    def direction(self):
+    def getDirection(self):
         return self.direc
 
-    def location(self):
+    def getLocation(self):
         return self.loc
 
-    def energy(self):
-        return self.E
+    def getEnergy(self,unit ='eV'):
+        if unit == 'eV':
+            return self.E/TC._eV_Erg
+        elif unit == 'ergs':
+            return self.E
+        else:
+            raise Exception("Invalid option for function argument \'unit.\'")
 
-    def weight(self):
+    def getWeight(self):
         return self.wgt
 
     def getID(self):
@@ -64,18 +72,25 @@ class Particle(metaclass=abc.ABCMeta):
     def setLocation(self,loc):
         self.loc = loc
 
-    def transport(self,geoManager):
+    def setEnergy(self,energy):
+        self.E = energy
+
+    def setWeight(self,weight):
+        self.wgt = weight
+
+    def transport(self,geoManager,matManager):
 
         # self.getCrossSection()
-        distance = self.sampleCollisionDistance()
+        distance = self.sampleCollisionDistance(matManager)
         newLoc = self.intersectionHandler(self.loc,distance,geoManager)
         self.prevLoc = self.loc
         self.loc = newLoc
         # will need to add an energy update step for inelastic scattering
         self.matID = self.getMaterial
-        scatterAngle = self.sampleScatterAngle()
+        scatterAngle, weight = self.sampleScatterAngle(matManager)
         gammaAngle = np.random.uniform(0,np.pi)
         self.direc = getNewDirection(scatterAngle,gammaAngle,self.direc)
+        self.wgt = self.wgt*weight
 
         return
 

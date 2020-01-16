@@ -105,6 +105,7 @@ class Geometry:
                     self.cellList[-1].cellID = int(i+j*1e3+k*1e6+1e11)
                     self.mesh[i,j,k] = self.cellList[-1].cellID
                     self.internalHashMap[self.cellList[-1].cellID]=self.cellList[-1]
+                    print(self.internalHashMap.keys())
         del self.internalHashMap[-1]
 
     # def cellSearch(self,iCoord,jCoord,kCoord):
@@ -126,6 +127,7 @@ class Geometry:
         self.setNeighborMat()
 
     def setNeighborMat(self):
+        print(self.internalHashMap.keys())
         for i in self.cellList:
             if not i.getBoundaryFace(face=1):
                 (self.internalHashMap[i.cellID+1]).neighborMat[1]=i.matID
@@ -244,6 +246,7 @@ if __name__=="__main__":
     print(b.mesh[3,1,0])
     a.addGeometry(b)
     print(len(a.meshList))
+    print("Cell Map type :" , type(a.cellDict))
     print((a.meshList[0]).mesh[3,0,0])
     key = (a.meshList[0]).mesh[3,0,0]
     print(a.cellDict[key].cellID)

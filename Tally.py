@@ -78,7 +78,7 @@ class HeatMap(Tally):
                     x = int((i.loc[0]-self.xMin)*invXDivSize)
                     y = int((i.loc[1]-self.yMin)*invYDivSize)
                     z = int((i.loc[2]-self.zMin)*invZDivSize)
-                    self.mesh[x,y,z] = i.weight
+                    self.mesh[x,y,z] = i.wgt
         return
 
 class TrackLength(Tally):

@@ -91,7 +91,7 @@ def diffXS(E,Z):
 
     return angle,xs
 
-def generateElasticElectronData(Z,):
+def generateElasticElectronData(Z):
     # Z = 10 # number of electrons in a water molecule
     energyEV = []
     crossSections = []
