@@ -117,7 +117,7 @@ class Particle(metaclass=abc.ABCMeta):
                     tempLoc = Geometry.intersectionPoint(initLoc,self.direc,distance,p1,p2,p4)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID+1]
-                elif cell.neighborMat[0] is None:
+                elif cell.neighborMat[0] == -1:
                     tempLoc = Geometry.intersectionPoint(initLoc,self.direc,distance,p1,p2,p4)
                     break
                 else:
@@ -128,7 +128,7 @@ class Particle(metaclass=abc.ABCMeta):
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p5,p6,p7)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID-1]
-                elif cell.neighborMat[1] is None:
+                elif cell.neighborMat[1] == -1:
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p5,p6,p7)
                     break
                 else:
@@ -139,7 +139,7 @@ class Particle(metaclass=abc.ABCMeta):
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p4,p5)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID+1000]
-                elif cell.neighborMat[2] is None:
+                elif cell.neighborMat[2] == -1:
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p4,p5)
                     break
                 else:
@@ -150,7 +150,7 @@ class Particle(metaclass=abc.ABCMeta):
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p2,p6,p3)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID-1000]
-                elif cell.neighborMat[3] is None:
+                elif cell.neighborMat[3] == -1:
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p2,p6,p3)
                     break
                 else:
@@ -161,7 +161,7 @@ class Particle(metaclass=abc.ABCMeta):
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p2,p5)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID+1000000]
-                elif cell.neighborMat[4] is None:
+                elif cell.neighborMat[4] == -1:
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p2,p5)
                     break
                 else:

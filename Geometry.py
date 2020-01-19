@@ -93,7 +93,7 @@ class Geometry:
                             self.cellList[-1].setBoundaryFace(face=1)
                         if i==0:
                             self.cellList[-1].setBoundaryFace(face=2)
-                        if j==self.iEdgesFine.size-2:
+                        if j==self.jEdgesFine.size-2:
                             self.cellList[-1].setBoundaryFace(face=3)
                         if j==0:
                             self.cellList[-1].setBoundaryFace(face=4)
@@ -105,7 +105,7 @@ class Geometry:
                     self.cellList[-1].cellID = int(i+j*1e3+k*1e6+1e11)
                     self.mesh[i,j,k] = self.cellList[-1].cellID
                     self.internalHashMap[self.cellList[-1].cellID]=self.cellList[-1]
-                    print(self.internalHashMap.keys())
+                    # print(self.internalHashMap.keys())
         del self.internalHashMap[-1]
 
     # def cellSearch(self,iCoord,jCoord,kCoord):
@@ -118,10 +118,10 @@ class Geometry:
         return self.dim
 
     def setMaterial(self,matList = 0):
-        if type(matList) == 'int':
+        if isinstance(matList,int):
             for i in self.cellList:
                 i.matID = matList
-        elif type(matList) == 'list':
+        elif isinstance(matList,list):
             for i in range(len(matList)):
                 self.cellList[i].matID = matList[i]
         self.setNeighborMat()
@@ -130,34 +130,39 @@ class Geometry:
         print(self.internalHashMap.keys())
         for i in self.cellList:
             if not i.getBoundaryFace(face=1):
+                print(i.cellID)
+                print(i.boundaryFaces)
+                # print(i.cellID+1)
+                # print(type(self.internalHashMap[i.cellID+1].neighborMat[1]))
+                # print(type(i.matID))
                 (self.internalHashMap[i.cellID+1]).neighborMat[1]=i.matID
             else:
-                i.neighborMat[0]=None
+                i.neighborMat[0]= -1
 
             if not i.getBoundaryFace(face=2):
                 (self.internalHashMap[i.cellID-1]).neighborMat[0]=i.matID
             else:
-                i.neighborMat[1]=None
+                i.neighborMat[1]= -1
 
             if not i.getBoundaryFace(face=3):
                 (self.internalHashMap[i.cellID+1000]).neighborMat[3]=i.matID
             else:
-                i.neighborMat[2]=None
+                i.neighborMat[2]= -1
 
             if not i.getBoundaryFace(face=4):
                 (self.internalHashMap[i.cellID-1000]).neighborMat[2]=i.matID
             else:
-                i.neighborMat[3]=None
+                i.neighborMat[3]= -1
 
             if not i.getBoundaryFace(face=5):
                 (self.internalHashMap[i.cellID+1000000]).neighborMat[1]=i.matID
             else:
-                i.neighborMat[4]=None
+                i.neighborMat[4]= -1
 
             if not i.getBoundaryFace(face=6):
                 (self.internalHashMap[i.cellID-1000000]).neighborMat[0]=i.matID
             else:
-                i.neighborMat[5]=None
+                i.neighborMat[5]= -1
 
     def  resetHashMap(self):
         A = {v.cellID:v for i,v in enumerate(self.internalHashMap.values())}
@@ -209,7 +214,7 @@ class Cell():
                 return self.boundaryFaces
             else:
                 return None
-        elif type(face) == 'int':
+        elif isinstance(face,int):
             return self.boundaryFaces[face-1]
         return None
 
@@ -239,11 +244,13 @@ def getTransitDistance(p1,p2):
 if __name__=="__main__":
     a = GeometryManager()
     b = Geometry(dim=3,coordSys = 'cartesian', iLimits = (0.,5.), jLimits = (0.,1.), kLimits = (0.,1.),
-                 coarseMesh=(5,1,1),fineI=[1,2,5,2,1],fineJ=[2],fineK=[3])
+                 coarseMesh=(5,2,2),fineI=[1,2,5,2,1],fineJ=[2,1],fineK=[3,2])
     print(type(b))
+    b.setMaterial(14)
     # print(b.cellList)
     # main()
     print(b.mesh[3,1,0])
+
     a.addGeometry(b)
     print(len(a.meshList))
     print("Cell Map type :" , type(a.cellDict))
