@@ -5,13 +5,9 @@ Created on Sun Nov 10 19:06:28 2019
 @author: Michael Vander Wal
 """
 
-
-import Particle
-import TransportConstants
 import Electron
 import Source
 import Geometry
-import numpy as np
 
 
 class ParticleManager:

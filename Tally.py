@@ -7,9 +7,10 @@ Created on Wed Jan  8 15:31:09 2020
 
 import numpy as np
 import Geometry
-import ParticleManager
-import Particle
-import Electron
+# import ParticleManager
+# import Particle
+# import Electron
+import matplotlib.pyplot as plt
 import abc
 
 
@@ -108,6 +109,17 @@ class HeatMap(Tally):
                     break
                 z-=1
 
+    # def printObjectToFile(self,fileName = "HeatMap.npy"):
+    #     np.save(fileName,self)
+
+    def printEdgesToFile(self,fileName = "HeatMapMesh.npy"):
+        sep = fileName.rpartition('.')
+        np.save(sep[0]+'_iMesh'+sep[1]+sep[2],self.iEdges)
+        np.save(sep[0]+'_jMesh'+sep[1]+sep[2],self.jEdges)
+        np.save(sep[0]+'_kMesh'+sep[1]+sep[2],self.kEdges)
+
+    def printHeatMapToFile(self,fileName = "HeatMapResults.npy"):
+        np.save(fileName,self.mesh)
 
 class TrackLength(Tally):
 

@@ -4,10 +4,10 @@ Created on Tue Nov 12 10:08:24 2019
 
 @author: Michael Vander Wal
 """
-import numpy as np
-import Distribution
-import DataGenerators
-import XSections
+# import numpy as np
+# import Distribution
+# import DataGenerators
+# import XSections
 
 
 class MaterialManager():

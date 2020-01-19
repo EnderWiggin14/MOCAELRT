@@ -6,15 +6,15 @@ Created on Sun Nov 10 21:41:00 2019
 """
 
 import numpy as np
-import Particle
+# import Particle
 from ParticleManager import *
-import Electron
+# import Electron
 import Distribution
 import Geometry
 import Material
 import Source
 import DataGenerators
-import TransportConstants
+# import TransportConstants
 import XSections
 import Tally
 from functools import partial
@@ -70,6 +70,9 @@ def main():
     PM.addTally(tal)
 
     PM.transportParticles()
+
+    tal.printEdgesToFile()
+    tal.printHeatMapToFile()
 
     return
 
