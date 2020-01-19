@@ -115,7 +115,8 @@ class Distribution():
 
 
 def diffElasticElectronXS(Z,E,theta):
-    EJ = E*TC._eV_Erg
+    # EJ = E*TC._eV_Erg
+    EJ = E
     print("ej ", EJ)
     vel = TC._c*(1-((EJ/(TC._eMass*TC._c**2))+1)**(-2))**.5
     print(((EJ/(TC._eMass*TC._c**2))+1))

@@ -15,4 +15,4 @@ _eV_Erg = 1.602176634e-12
 charge = [_eCharge]
 mass = [_eMass]
 
-dummyDirection = np.array([ 0., 0., 1.])
+# dummyDirection = np.array([ 0., 0., 1.])

@@ -11,6 +11,7 @@ import TransportConstants as TC
 import abc
 import Geometry
 
+dummyDirection = np.array([0.,0.,1.])
 
 class Particle(metaclass=abc.ABCMeta):
     particleType = None
@@ -33,7 +34,7 @@ class Particle(metaclass=abc.ABCMeta):
         self.loc = np.array(loc)
         self.direc = np.array(direc)
         self.E = self.energyConvert(enrg)
-        self.weight = 1.
+        self.wgt = 1.
         self.ID = pid
         return
 
@@ -209,8 +210,8 @@ class Particle(metaclass=abc.ABCMeta):
 
 
 def getNewDirection(scatterAngle,gammaAngle,initDir):
-    v = np.cross(a = initDir, b = TC.dummyDirection)
-    d = np.dot(initDir,TC.dummyDirection)
+    v = np.cross(a = initDir, b = dummyDirection)
+    d = np.dot(initDir,dummyDirection)
     vSkew = np.array([[ 0., -v[2], v[1]],
                       [ v[2], 0., -v[0]],
                       [ -v[1], v[0], 0.]])
