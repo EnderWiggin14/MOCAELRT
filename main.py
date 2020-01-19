@@ -16,6 +16,7 @@ import Source
 import DataGenerators
 import TransportConstants
 import XSections
+import Tally
 from functools import partial
 
 
@@ -63,6 +64,10 @@ def main():
     soMan.addSource(so)
 
     PM.addParticles(source = soMan)
+
+    # Step 6: Create and add Tally
+    tal = Tally.HeatMap(geo)
+    PM.addTally(tal)
 
     PM.transportParticles()
 

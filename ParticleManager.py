@@ -19,6 +19,7 @@ class ParticleManager:
     allParticles = []
     geoManager = None
     matManager = None
+    tally = None
 
     def __init__(self):
         return
@@ -28,6 +29,9 @@ class ParticleManager:
 
     def addMaterials(self,matMan):
         self.matManager = matMan
+
+    def addTally(self,tal):
+        self.tally = tal
 
     def addParticles(self,pType=None,nPart=None,source=None):
         if not source is None:
@@ -48,10 +52,25 @@ class ParticleManager:
 
 
     def transportParticles(self):
-        for i in self.allParticles:
-            i.transport(self.geoManager,self.matManager)
+
+        if not self.tally is None:
+            for i in self.allParticles:
+                i.transport(self.geoManager,self.matManager)
+                self.tallyParticles()
+                self.cleanUpParticles()
+        else:
+            for i in self.allParticles:
+                i.transport(self.geoManager,self.matManager)
+                self.cleanUpParticles()
         return
 
+    def tallyParticles(self):
+        self.tally.score(self.allParticles)
+
+    def cleanUpParticles(self):
+        for i in self.allParticles:
+            if not i.track:
+                del i
 
 def main():
     geoMan = Geometry.GeometryManager()

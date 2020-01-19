@@ -53,6 +53,8 @@ class Tally(metaclass=abc.ABCMeta):
             self.jEdges = mesh.jEdgesFine
             self.kEdges = mesh.kEdgesFine
             self.mesh = np.zeros((self.iEdges.size-1,self.jEdges.size-1,self.kEdges.size-1))
+        else:
+            raise TypeError("The mesh type currently supported is a Geometry Object.")
         return
 
     def generateTallyMesh(self):
@@ -65,7 +67,7 @@ class Tally(metaclass=abc.ABCMeta):
 
 class HeatMap(Tally):
 
-    def __init__(self,mesh = None,uniform = True):
+    def __init__(self,mesh = None,uniform = False):
         Tally.__init__(self,mesh,uniform)
 
     def score(self,particleList):
@@ -79,7 +81,33 @@ class HeatMap(Tally):
                     y = int((i.loc[1]-self.yMin)*invYDivSize)
                     z = int((i.loc[2]-self.zMin)*invZDivSize)
                     self.mesh[x,y,z] = i.wgt
-        return
+        else:
+            for i in particleList:
+                x = 0
+                y = 0
+                z = 0
+                while self.iEdges[x] <= i.loc[0] and x < self.iEdges.size:
+                    x +=1
+
+                if x == self.iEdges.size:
+                    print('failed')
+                    break
+                x-=1
+                while self.jEdges[y] <=i.loc[1] and y < self.jEdges.size:
+                    y +=1
+
+                if y == self.jEdges.size:
+                    print('failed')
+                    break
+                y-=1
+                while self.kEdges[z] <= i.loc[2] and z < self.kEdges.size:
+                    z +=1
+
+                if z == self.kEdges.size:
+                    print('failed')
+                    break
+                z-=1
+
 
 class TrackLength(Tally):
 
