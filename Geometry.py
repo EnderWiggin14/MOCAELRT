@@ -21,7 +21,7 @@ class GeometryManager():
             for i in self.meshList[-1].cellList:
                 i.cellID = int(i.cellID+self.nextRegionID*1e9)
                 self.cellDict[i.cellID] = i
-                print(self.cellDict[i.cellID].cellID)
+                # print(self.cellDict[i.cellID].cellID)
             self.meshList[-1].mesh += int(self.nextRegionID*1e9)
             self.meshList[-1].resetHashMap()
             self.nextRegionID += 1
@@ -83,11 +83,11 @@ class Geometry:
         return
 
     def makeCellMap(self):
+        print(self.iEdgesFine)
         for k in range(0,self.kEdgesFine.size-1):
             for j in range(0,self.jEdgesFine.size-1):
                 for i in range(0,self.iEdgesFine.size-1):
                     self.cellList.append(Cell(self.iEdgesFine[i:i+2],self.jEdgesFine[j:j+2],self.kEdgesFine[k:k+2]))
-
                     if self.coordSys == 'cartesian':
                         if i==self.iEdgesFine.size-2:
                             self.cellList[-1].setBoundaryFace(face=1)
@@ -101,7 +101,6 @@ class Geometry:
                             self.cellList[-1].setBoundaryFace(face=5)
                         if k==0:
                             self.cellList[-1].setBoundaryFace(face=6)
-
                     self.cellList[-1].cellID = int(i+j*1e3+k*1e6+1e11)
                     self.mesh[i,j,k] = self.cellList[-1].cellID
                     self.internalHashMap[self.cellList[-1].cellID]=self.cellList[-1]
@@ -127,14 +126,9 @@ class Geometry:
         self.setNeighborMat()
 
     def setNeighborMat(self):
-        print(self.internalHashMap.keys())
         for i in self.cellList:
+            print(i.boundaryFaces, "   ", i.cellID)
             if not i.getBoundaryFace(face=1):
-                print(i.cellID)
-                print(i.boundaryFaces)
-                # print(i.cellID+1)
-                # print(type(self.internalHashMap[i.cellID+1].neighborMat[1]))
-                # print(type(i.matID))
                 (self.internalHashMap[i.cellID+1]).neighborMat[1]=i.matID
             else:
                 i.neighborMat[0]= -1
@@ -199,8 +193,10 @@ class Cell():
     def getKBounds(self):
         return self.kBounds
     def setBoundaryFace(self,face = None,value = True):
-        if not face is None:
+        if isinstance(face,int):
             self.boundaryFaces[face-1]=value
+        else:
+            raise TypeError('The function argument face must of type int.')
         return
     def getBoundaryFace(self,face = None,output = "indices"):
         if face is None:
