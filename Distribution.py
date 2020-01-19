@@ -51,7 +51,6 @@ class Distribution():
         tempParam=[]
         tempParam +=param
         tempParam.append(val)
-        print(type(self.pdfData))
         if isinstance(self.pdfData,(FUNC_TYPE,BUILTIN_FUNC_TYPE,partial)):
             weight = self.pdf(tempParam)/self.proposalPdfHandle(val)
         elif isinstance(self.pdfData,(list,np.ndarray)):
@@ -114,22 +113,14 @@ class Distribution():
         return ystar
 
 
-def diffElasticElectronXS(Z,E,theta):
-    # EJ = E*TC._eV_Erg
-    EJ = E
-    print("ej ", EJ)
+def diffElasticElectronXS(Z,EJ,theta):
     vel = TC._c*(1-((EJ/(TC._eMass*TC._c**2))+1)**(-2))**.5
-    print(((EJ/(TC._eMass*TC._c**2))+1))
-    print(vel)
     lightFrac = vel/TC._c
     gamma = (1-lightFrac**2)**(-.5)
     p = TC._eMass*gamma*vel
-    # KE = p**2/(2*eMass)
     KE = TC._eMass*TC._c*TC._c*(gamma-1)
-    print("speed of light   ",TC._c*TC._c*(gamma-1))
 
     T = KE*TC._mc2/(TC._eMass)
-    print(KE,TC._mc2,TC._c,gamma,TC._eMass)
     etaC = 1.64-0.0825*np.log(T)
     eta = etaC*1.7e-5*Z**(2./3.)*(T**-1)*(T+2)**-1
 
@@ -137,100 +128,9 @@ def diffElasticElectronXS(Z,E,theta):
 
 
 if __name__=="__main__":
-    # a = DiscreteDist()
-    # b = ContinuousDist()
-    # c = ElasticElectron()
-    # print(c.sample())
     a = Distribution()
     f = diffElasticElectronXS
     a.setPdfData(f)
     print(type(a.pdfData))
     print(a.pdf([10,100,.2*np.pi/180]))
     print("Successfully completed \a")
-
-
-
-    # class Distribution(metaclass=abc.ABCMeta):
-#     name = "unnamed"
-#     dist = None
-#     def __init__(self):
-#         return
-
-#     def setDiscreteDifferential(self,func=None):
-#         if func is None:
-#             print("error handling needs to be added")
-#             return
-#         self.diffCont = func
-#         return
-
-#     def setContinuousDistribution(self,func=None):
-#         if func is None:
-#             print("error handling needs to be added")
-#             return
-#         self.distCont = func
-#         return
-
-#     def getName(self):
-#         return self.name
-
-#     @abc.abstractmethod
-#     def sample(self):
-#         pass
-
-# class DiscreteDist(metaclass=abc.ABCMeta):
-
-#     def __init__(self):
-#         Distribution.__init__(self)
-#         return
-
-#     def sample(self,x):
-#         print("Need to add sample method")
-#         return;
-
-# class ContinuousDist(metaclass=abc.ABCMeta):
-#     direct = True
-#     pdfCoefs = None
-#     cdfCoefs = None
-#     inv = None
-#     def __init__(self,inv=None):
-#         Distribution.__init__(self)
-#         self.inv = inv
-#         return
-
-#     @abc.abstractmethod
-#     def sample(self):
-#         pass
-
-
-
-#     def invCdf(self,x):
-#         if not self.inv is None:
-#             return self.inv(self,x)
-#         return 0
-
-
-# class Normal(Distribution):
-#     sigma = 1
-#     mean = 0
-#     def __init__(self,mean=0.0,sigma=1.):
-#         Distribution.__init__(self)
-#         self.sigma = sigma
-#         self.mean = mean
-#         return
-
-#     def sample(self):
-#         return np.random.normal(self.mean,self.sigma)
-
-
-
-# class ElasticElectron(ContinuousDist):
-
-#     def __init__(self,enrg = 0):
-#         ContinuousDist.__init__(self,inv = lambda self,thet : np.arctanh(thet))
-
-#     def sample(self,x=1):
-#         if x > 0:
-#             if self.direct:
-#                 return self.invCdf(np.random.rand(x))
-#         else:
-#             return None

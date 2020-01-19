@@ -105,7 +105,6 @@ class Particle(metaclass=abc.ABCMeta):
 
             # Giving alternative name to curCell to decrease length of lines
             cell = self.getCurrentCell()
-            print(cell.iBounds)
             p1 = np.array([cell.iBounds[1],cell.jBounds[1],cell.kBounds[0]])
             p2 = np.array([cell.iBounds[1],cell.jBounds[0],cell.kBounds[0]])
             p3 = np.array([cell.iBounds[1],cell.jBounds[0],cell.kBounds[1]])

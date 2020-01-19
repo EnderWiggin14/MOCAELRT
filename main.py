@@ -50,7 +50,7 @@ def main():
     geoMan.addGeometry(geo)
 
     PM.addGeometry(geoMan)
-    print(PM.matManager.matDict[14].zNumber)
+    # print(PM.matManager.matDict[14].zNumber)
 
     # Step 5: Add Source Particles
     soMan = Source.SourceManager()

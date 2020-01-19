@@ -32,8 +32,6 @@ class ParticleManager:
     def addParticles(self,pType=None,nPart=None,source=None):
         if not source is None:
             self.allParticles+=source.generateParticles()
-            # for i in self.allParticles:
-            #     print(i.direc)
         else:
             if pType == 'electron':
                 for j in range(nPart[0]):

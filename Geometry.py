@@ -241,16 +241,13 @@ class Cell():
         return None
 
 def doesIntersect(loc,direc,dist,p1,p2,p3):
-    print(loc,direc,dist,p1,p2,p3)
     mat = np.ndarray((3,3))
     mat[:,0] = -dist*direc[0:3]
     mat[:,1] = p2[0:3]-p1[0:3]
     mat[:,2] = p3[0:3]-p1[0:3]
-    # print(mat)
+
     b = loc-p1
     ans = np.dot(np.linalg.inv(mat),b)
-    print(ans)
-    print(ans[0])
     return (ans[0] > 0 and ans[0] < 1 )
 
 def intersectionPoint(loc,direc,dist,p1,p2,p3):
