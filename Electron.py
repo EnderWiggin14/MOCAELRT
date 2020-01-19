@@ -22,17 +22,17 @@ class Electron(Particle):
         return enrg*TC._eV_Erg
 
     def getVelocity(self):
-        return TC._c*(1-((self.E/(TC.mass[self.particleType]*TC._c**2))+1)**(-2))**.5
+        return TC._c*(1-((self.E/(TC._eMass*TC._c**2))+1)**(-2))**.5
 
     def sampleCollisionDistance(self,matMan):
         # mfpInv = (self.matID.atomicDensity)/self.xs
-        mat = matMan[self.matID]
+        mat = matMan.matDict[self.getMaterial()]
         mfpInv = mat.atomicDensity/mat.sampleElectronXS(self.E)
         return Distribution.exponential(mfpInv)
 
     def sampleScatterAngle(self,matMan):
         # return Distribution.ElasticElectron(self.E)
-        angle, weight = matMan[self.matID].sampleElectronScatterAngle(self.E)
+        angle, weight = matMan.matDict[self.matID].sampleElectronScatterAngle(self.E)
         return angle, weight
 
 
@@ -40,6 +40,6 @@ class Electron(Particle):
 
 if __name__=="__main__":
     p = Electron()
-    print(p.energy())
+    print(p.getEnergy())
     print(p.getVelocity())
     # print(TC._eMass)

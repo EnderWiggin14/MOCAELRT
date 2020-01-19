@@ -29,6 +29,33 @@ class GeometryManager():
         if not self.cellDict[-1] is None:
             del self.cellDict[-1]
 
+    def findCell(self,loc):
+        for i in self.meshList:
+            x = 0
+            y = 0
+            z = 0
+            while i.iEdgesFine[x] <= loc[0] and x < i.iEdgesFine.size:
+                x +=1
+
+            if x == i.iEdgesFine.size:
+                print('failed')
+                break
+            x-=1
+            while i.jEdgesFine[y] <=loc[1] and y < i.jEdgesFine.size:
+                y +=1
+
+            if y == i.jEdgesFine.size:
+                print('failed')
+                break
+            y-=1
+            while i.kEdgesFine[z] <= loc[2] and z < i.kEdgesFine.size:
+                z +=1
+
+            if z == i.kEdgesFine.size:
+                print('failed')
+                break
+            z-=1
+            return self.cellDict[i.mesh[x,y,z]]
 
 
 
@@ -83,7 +110,6 @@ class Geometry:
         return
 
     def makeCellMap(self):
-        print(self.iEdgesFine)
         for k in range(0,self.kEdgesFine.size-1):
             for j in range(0,self.jEdgesFine.size-1):
                 for i in range(0,self.iEdgesFine.size-1):
@@ -127,7 +153,7 @@ class Geometry:
 
     def setNeighborMat(self):
         for i in self.cellList:
-            print(i.boundaryFaces, "   ", i.cellID)
+            # print(i.boundaryFaces, "   ", i.cellID)
             if not i.getBoundaryFace(face=1):
                 (self.internalHashMap[i.cellID+1]).neighborMat[1]=i.matID
             else:
@@ -215,13 +241,16 @@ class Cell():
         return None
 
 def doesIntersect(loc,direc,dist,p1,p2,p3):
+    print(loc,direc,dist,p1,p2,p3)
     mat = np.ndarray((3,3))
     mat[:,0] = -dist*direc[0:3]
     mat[:,1] = p2[0:3]-p1[0:3]
     mat[:,2] = p3[0:3]-p1[0:3]
+    # print(mat)
     b = loc-p1
-    ans = np.lingalg.inv(mat)*b
-
+    ans = np.dot(np.linalg.inv(mat),b)
+    print(ans)
+    print(ans[0])
     return (ans[0] > 0 and ans[0] < 1 )
 
 def intersectionPoint(loc,direc,dist,p1,p2,p3):
@@ -230,7 +259,7 @@ def intersectionPoint(loc,direc,dist,p1,p2,p3):
     mat[:,1] = p2[0:3]-p1[0:3]
     mat[:,2] = p3[0:3]-p1[0:3]
     b = loc-p1
-    ans = np.lingalg.inv(mat)*b
+    ans = np.dot(np.linalg.inv(mat),b)
 
     return loc+ans[0]*mat[:,0]
 

@@ -47,11 +47,15 @@ class Distribution():
 
     def sample(self,param):
         weight = 1.0
-        val = self.proposalSampleHandle(param)
-        if isinstance(self.pdfData,(FUNC_TYPE,BUILTIN_FUNC_TYPE)):
-            weight = self.pdf(val)/self.proposalPdfHandle(val)
+        val = self.proposalSampleHandle()
+        tempParam=[]
+        tempParam +=param
+        tempParam.append(val)
+        print(type(self.pdfData))
+        if isinstance(self.pdfData,(FUNC_TYPE,BUILTIN_FUNC_TYPE,partial)):
+            weight = self.pdf(tempParam)/self.proposalPdfHandle(val)
         elif isinstance(self.pdfData,(list,np.ndarray)):
-            weight = self.pdf(val)/self.proposalPdfHandle(val)
+            weight = self.pdf(tempParam)/self.proposalPdfHandle(val)
         else:
             raise Exception("The provided combination of object attributes is not valid for Distribution.handle and Distribution.pdfData.")
         return val, weight
@@ -59,7 +63,7 @@ class Distribution():
     def pdf(self,x):
         if isinstance(self.pdfData,(list,np.ndarray)):
             return self.interp(x,self.pdfData)
-        elif isinstance(self.pdfData,FUNC_TYPE):
+        elif isinstance(self.pdfData,(FUNC_TYPE,partial)):
             if isinstance(x,list):
                 handle = partial(self.pdfData,x[0])
                 for i in range(1,len(x)):
@@ -112,15 +116,19 @@ class Distribution():
 
 def diffElasticElectronXS(Z,E,theta):
     EJ = E*TC._eV_Erg
+    print("ej ", EJ)
     vel = TC._c*(1-((EJ/(TC._eMass*TC._c**2))+1)**(-2))**.5
+    print(((EJ/(TC._eMass*TC._c**2))+1))
+    print(vel)
     lightFrac = vel/TC._c
     gamma = (1-lightFrac**2)**(-.5)
     p = TC._eMass*gamma*vel
     # KE = p**2/(2*eMass)
     KE = TC._eMass*TC._c*TC._c*(gamma-1)
+    print("speed of light   ",TC._c*TC._c*(gamma-1))
 
     T = KE*TC._mc2/(TC._eMass)
-
+    print(KE,TC._mc2,TC._c,gamma,TC._eMass)
     etaC = 1.64-0.0825*np.log(T)
     eta = etaC*1.7e-5*Z**(2./3.)*(T**-1)*(T+2)**-1
 

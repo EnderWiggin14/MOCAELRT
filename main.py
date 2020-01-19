@@ -29,14 +29,16 @@ def main():
     # This step will hopefully not be explicityly needed in the future
     totalXS,scatterXS = DataGenerators.generateElasticElectronData(10)
     xsec = XSections.XSection(totalXS[1],totalXS[0])
-    diffXS = partial(Distribution.diffElasticElectronXS,10)
+    diffXS = Distribution.Distribution()
+    diffXS.setDomain([0,2*np.pi])
+    diffXS.setPdfData(partial(Distribution.diffElasticElectronXS,10))
 
 
     # Step 3: Add Materials
     matMan = Material.MaterialManager()
     mat = Material.Material(14)
     mat.setZNumber(10)
-    mat.setElectronScatterDistribution(diffXS)
+    mat.setElectronScatterDistribution(diffXS.sample)
     mat.setElectronTotalXSHandle(xsec.getXSection)
     matMan.addMaterial(mat)
 
@@ -48,18 +50,21 @@ def main():
     geoMan.addGeometry(geo)
 
     PM.addGeometry(geoMan)
+    print(PM.matManager.matDict[14].zNumber)
 
     # Step 5: Add Source Particles
     soMan = Source.SourceManager()
     so = Source.Source()
     so.setLocation()
     so.setEnergy()
-    so.setDirection()
+    so.setDirection(np.array([1.,0.,0.]))
     so.setParticleType()
     so.setPopulation()
     soMan.addSource(so)
 
     PM.addParticles(source = soMan)
+
+    PM.transportParticles()
 
     return
 

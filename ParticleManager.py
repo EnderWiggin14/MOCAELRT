@@ -32,6 +32,8 @@ class ParticleManager:
     def addParticles(self,pType=None,nPart=None,source=None):
         if not source is None:
             self.allParticles+=source.generateParticles()
+            # for i in self.allParticles:
+            #     print(i.direc)
         else:
             if pType == 'electron':
                 for j in range(nPart[0]):
@@ -40,6 +42,11 @@ class ParticleManager:
                 pass
             if pType == 'neutron':
                 pass
+        self.assignParticlesToCells()
+
+    def assignParticlesToCells(self):
+        for i in self.allParticles:
+            i.curCell = self.geoManager.findCell(i.loc)
 
 
     def transportParticles(self):

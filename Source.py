@@ -21,7 +21,6 @@ class SourceManager():
                 if i.particle == "electron":
                     for j in range(i.population):
                         particles.append(Electron.Electron(loc=i.locationGenerator(),direc=i.directionGenerator(),enrg=i.energyGenerator()))
-
         return particles
 
 class Source():
@@ -44,7 +43,7 @@ class Source():
         self.setLocation(location)
 
     def setDirection(self,direction = np.array([0.,0.,1.])):
-        self.sourceDirection = direction
+        self.sourceDirection = np.array(direction)
 
     def setPopulation(self, population=10):
         self.population = population
@@ -52,7 +51,7 @@ class Source():
     def setParticleType(self,particleType = 'electron'):
         self.partice = particleType
 
-    def setEnergy(self,energy=1000):
+    def setEnergy(self,energy=1e5):
         self.E = energy
 
     def energyGenerator(self):
@@ -73,7 +72,7 @@ class Source():
 
     def directionGenerator(self):
         if isinstance(self.sourceDirection,np.ndarray):
-            return self.sourceLocation
+            return self.sourceDirection
         elif isinstance(self.sourceDirection,str):
             return np.array([0.,0.,1.]) # temporary value, intended to be used for distributions
         else:
