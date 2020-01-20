@@ -15,7 +15,7 @@ class Electron(Particle):
 # class Electron(Particle.Particle):
 
     def __init__(self, loc = [0.,0.,0.], direc = [0.,0.,1.], enrg = 100.,pid = np.random.randint(0,9999999) ):
-        Particle.__init__(self,'electron',loc,direc,self.energyConvert(enrg))
+        Particle.__init__(self,'electron',loc,direc,enrg)
         return
 
     def energyConvert(self,enrg):
@@ -27,8 +27,8 @@ class Electron(Particle):
     def sampleCollisionDistance(self,matMan):
         # mfpInv = (self.matID.atomicDensity)/self.xs
         mat = matMan.matDict[self.getMaterial()]
-        mfpInv = mat.atomicDensity/mat.sampleElectronXS(self.E)
-        return Distribution.exponential(mfpInv)
+        mfpInv = mat.atomicDensity*mat.sampleElectronXS(self.getEnergy())
+        return Distribution.exponential(1/mfpInv)
 
     def sampleScatterAngle(self,matMan):
         # return Distribution.ElasticElectron(self.E)

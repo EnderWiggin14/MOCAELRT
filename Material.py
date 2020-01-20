@@ -62,6 +62,9 @@ class Material():
 
         self.comp = comp
 
+    def setAtomicDensity(self,density):
+        self.atomicDensity = density
+
     def sampleElectronXS(self,energy):
          return self.totalCrossHandle(energy)
 

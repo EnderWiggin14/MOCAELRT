@@ -16,6 +16,7 @@ class ParticleManager:
     geoManager = None
     matManager = None
     tally = None
+    iterationLimit = 50
 
     def __init__(self):
         return
@@ -48,25 +49,35 @@ class ParticleManager:
 
 
     def transportParticles(self):
-
+        j=0
         if not self.tally is None:
-            for i in self.allParticles:
-                i.transport(self.geoManager,self.matManager)
+            while len(self.allParticles)>0 and j < self.iterationLimit:
+                print("Loop iteration : ", j, "Particles Left : ",len(self.allParticles))
+                for i in self.allParticles:
+                    i.transport(self.geoManager,self.matManager)
                 self.tallyParticles()
                 self.cleanUpParticles()
+                j +=1
         else:
-            for i in self.allParticles:
-                i.transport(self.geoManager,self.matManager)
+            while len(self.allParticle) > 0 and j < self.iterationLimit:
+                for i in self.allParticles:
+                    i.transport(self.geoManager,self.matManager)
                 self.cleanUpParticles()
+                j+=1
         return
 
     def tallyParticles(self):
         self.tally.score(self.allParticles)
 
     def cleanUpParticles(self):
-        for i in self.allParticles:
-            if not i.track:
-                del i
+        limit = len(self.allParticles)
+        i=0
+        while i < limit:
+            if not self.allParticles[i].track:
+                del self.allParticles[i]
+                limit -= 1
+            else:
+                i+=1
 
 def main():
     geoMan = Geometry.GeometryManager()

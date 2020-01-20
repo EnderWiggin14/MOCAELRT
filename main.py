@@ -14,7 +14,7 @@ import Geometry
 import Material
 import Source
 import DataGenerators
-# import TransportConstants
+import TransportConstants as TC
 import XSections
 import Tally
 from functools import partial
@@ -31,14 +31,14 @@ def main():
     totalXS,scatterXS = DataGenerators.generateElasticElectronData(10)
     xsec = XSections.XSection(totalXS[1],totalXS[0])
     diffXS = Distribution.Distribution()
-    diffXS.setDomain([0,2*np.pi])
+    diffXS.setDomain([0,np.pi])
     diffXS.setPdfData(partial(Distribution.diffElasticElectronXS,10))
-
 
     # Step 3: Add Materials
     matMan = Material.MaterialManager()
     mat = Material.Material(14)
     mat.setZNumber(10)
+    mat.setAtomicDensity(1.0*(1/18.01)*TC._nAvogad)
     mat.setElectronScatterDistribution(diffXS.sample)
     mat.setElectronTotalXSHandle(xsec.getXSection)
     matMan.addMaterial(mat)
@@ -46,7 +46,7 @@ def main():
     PM.addMaterials(matMan)
     # Step 4: Add Geometry
     geoMan = Geometry.GeometryManager()
-    geo = Geometry.Geometry()
+    geo = Geometry.Geometry(dim=3,coordSys = 'cartesian', iLimits = (0,1e-6), jLimits = (-3e-6,3e-6), kLimits = (-5e-6,5e-6), coarseMesh=(1,1,1),fineI=[100],fineJ=[50],fineK=[10])
     geo.setMaterial(14)
     geoMan.addGeometry(geo)
 
@@ -57,10 +57,10 @@ def main():
     soMan = Source.SourceManager()
     so = Source.Source()
     so.setLocation()
-    so.setEnergy()
+    so.setEnergy(1000)
     so.setDirection(np.array([1.,0.,0.]))
     so.setParticleType()
-    so.setPopulation()
+    so.setPopulation(1000)
     soMan.addSource(so)
 
     PM.addParticles(source = soMan)
@@ -71,6 +71,7 @@ def main():
 
     PM.transportParticles()
 
+    tal.createGraphic()
     tal.printEdgesToFile()
     tal.printHeatMapToFile()
 

@@ -247,6 +247,8 @@ def doesIntersect(loc,direc,dist,p1,p2,p3):
     mat[:,2] = p3[0:3]-p1[0:3]
 
     b = loc-p1
+    if np.linalg.det(mat) == 0:
+        return False
     ans = np.dot(np.linalg.inv(mat),b)
     return (ans[0] > 0 and ans[0] < 1 )
 
