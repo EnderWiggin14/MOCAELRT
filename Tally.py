@@ -97,9 +97,9 @@ class HeatMap(Tally):
                     if self.xMin <= i.loc[0] and i.loc[0] < self.xMax:
                         if self.yMin <= i.loc[1] and i.loc[1] < self.yMax:
                             if self.zMin <= i.loc[2] and i.loc[2] < self.zMax:
-                                x = np.searchsorted(self.iEdges,i.loc[0])
-                                y = np.searchsorted(self.jEdges,i.loc[1])
-                                z = np.searchsorted(self.kEdges,i.loc[2])
+                                x = np.searchsorted(self.iEdges,i.loc[0])-1
+                                y = np.searchsorted(self.jEdges,i.loc[1])-1
+                                z = np.searchsorted(self.kEdges,i.loc[2])-1
                                 self.mesh[x,y,z] += i.wgt
                     # while x < self.iEdges.size and self.iEdges[x] <= i.loc[0]:
                     #     x +=1
