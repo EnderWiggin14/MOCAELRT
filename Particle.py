@@ -25,6 +25,7 @@ class Particle(metaclass=abc.ABCMeta):
     track = True
     matID = None
     curCell = None
+    newWgt = 1.
 
     def __init__(self,species='electron',loc = [0.,0.,0.], direc = [0.,0.,1.], enrg = 100.,pid = -1):
         if isinstance(species,str):
@@ -81,7 +82,6 @@ class Particle(metaclass=abc.ABCMeta):
 
     def transport(self,geoManager,matManager):
 
-        # self.getCrossSection()
         distance = self.sampleCollisionDistance(matManager)
         newLoc = self.intersectionHandler(self.loc,distance,geoManager)
         self.prevLoc = self.loc
@@ -90,13 +90,9 @@ class Particle(metaclass=abc.ABCMeta):
         self.matID = self.getMaterial()
         scatterAngle, weight = self.sampleScatterAngle(matManager)
         gammaAngle = np.random.uniform(0,np.pi)
-        # prevDirec = self.direc
         self.direc = getNewDirection(scatterAngle,gammaAngle,self.direc)
-        # if np.isinf(weight):
-        #     print("A weight is infinite with previous direction  ",prevDirec, "  and next direction  ", self.direc)
-        self.wgt = self.wgt*weight
-        # print("From: ",self.prevLoc, " To: ",self.loc)
-
+        self.wgt = self.newWgt
+        self.newWgt = self.wgt*weight
         return
 
     def intersectionHandler(self,initLoc,distance,geoManager):
@@ -122,67 +118,79 @@ class Particle(metaclass=abc.ABCMeta):
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID+1]
                 elif cell.neighborMat[0] == -1:
-                    tempLoc = Geometry.intersectionPoint(initLoc,self.direc,distance,p1,p2,p4)
+                    # print("Leaving the trackable area")
+                    # tempLoc = Geometry.intersectionPoint(initLoc,self.direc,distance,p1,p2,p4)
+                    tempLoc = distance*self.direc+initLoc
                     self.track=False
                     break
                 else:
                     flag = True
 
-            elif Geometry.doesIntersect(self.loc,self.direc,distance,p5,p6,p7):# - i direction
+            elif Geometry.doesIntersect(initLoc,self.direc,distance,p5,p6,p7):# - i direction
                 if cell.matID == cell.neighborMat[1]:
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p5,p6,p7)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID-1]
                 elif cell.neighborMat[1] == -1:
-                    tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p5,p6,p7)
+                    # print("Leaving the trackable area")
+                    # tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p5,p6,p7)
+                    tempLoc = distance*self.direc+initLoc
                     self.track=False
                     break
                 else:
                     flag = True
 
-            elif Geometry.doesIntersect(self.loc,self.direc,distance,p1,p4,p5):# + j direction
+            elif Geometry.doesIntersect(initLoc,self.direc,distance,p1,p4,p5):# + j direction
                 if cell.matID == cell.neighborMat[2]:
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p4,p5)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID+1000]
                 elif cell.neighborMat[2] == -1:
-                    tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p4,p5)
+                    # print("Leaving the trackable area")
+                    # tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p4,p5)
+                    tempLoc = distance*self.direc+initLoc
                     self.track=False
                     break
                 else:
                     flag = True
 
-            elif Geometry.doesIntersect(self.loc,self.direc,distance,p2,p6,p3):# - j direction
+            elif Geometry.doesIntersect(initLoc,self.direc,distance,p2,p6,p3):# - j direction
                 if cell.matID == cell.neighborMat[3]:
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p2,p6,p3)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID-1000]
                 elif cell.neighborMat[3] == -1:
-                    tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p2,p6,p3)
+                    # print("Leaving the trackable area")
+                    # tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p2,p6,p3)
+                    tempLoc = distance*self.direc+initLoc
                     self.track=False
                     break
                 else:
                     flag = True
 
-            elif Geometry.doesIntersect(self.loc,self.direc,distance,p1,p2,p5):# + k direction
+            elif Geometry.doesIntersect(initLoc,self.direc,distance,p1,p2,p5):# + k direction
                 if cell.matID == cell.neighborMat[4]:
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p2,p5)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID+1000000]
                 elif cell.neighborMat[4] == -1:
-                    tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p2,p5)
+                    # print("Leaving the trackable area")
+                    # tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p1,p2,p5)
+                    tempLoc = distance*self.direc+initLoc
                     self.track=False
                     break
                 else:
                     flag = True
 
-            elif Geometry.doesIntersect(self.loc,self.direc,distance,p3,p4,p7):# - k direction
+            elif Geometry.doesIntersect(initLoc,self.direc,distance,p3,p4,p7):# - k direction
                 if cell.matID == cell.neighborMat[5]:
                     tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p3,p4,p7)
                     distance = distance - Geometry.getTransitDistance(initLoc,tempLoc)
                     self.curCell = geoManager.cellDict[self.curCell.cellID-1000000]
                 elif cell.neighborMat[5] == -1:
-                    tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p3,p4,p7)
+                    # print("Leaving the trackable area")
+                    # tempLoc = Geometry.intersectionPoint(self.loc,self.direc,distance,p3,p4,p7)
+                    tempLoc = distance*self.direc+initLoc
                     self.track=False
                     break
                 else:
