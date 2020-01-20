@@ -90,7 +90,10 @@ class Particle(metaclass=abc.ABCMeta):
         self.matID = self.getMaterial()
         scatterAngle, weight = self.sampleScatterAngle(matManager)
         gammaAngle = np.random.uniform(0,np.pi)
+        # prevDirec = self.direc
         self.direc = getNewDirection(scatterAngle,gammaAngle,self.direc)
+        # if np.isinf(weight):
+        #     print("A weight is infinite with previous direction  ",prevDirec, "  and next direction  ", self.direc)
         self.wgt = self.wgt*weight
         # print("From: ",self.prevLoc, " To: ",self.loc)
 

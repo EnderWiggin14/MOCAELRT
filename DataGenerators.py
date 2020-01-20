@@ -7,6 +7,7 @@ Created on Thu Jan  9 13:57:14 2020
 
 import numpy as np
 import TransportConstants as TC
+import matplotlib.pyplot as plt
 eMass = TC._eMass
 c = TC._c
 mc2 = 1/c**2
@@ -112,3 +113,18 @@ def generateElasticElectronData(Z):
         output = diffXS(energyEV[i],Z)
         differentialXSections.append(output)
     return totalCrossSections,differentialXSections
+
+def main():
+    xs,difXS= generateElasticElectronData(10)
+    xs = np.array(xs)
+    difXS = np.array(difXS)
+    print(xs[0,50])
+    print(difXS[50,0,:])
+    plt.loglog(xs[0,:],xs[1,:])
+    plt.show()
+    plt.semilogy(difXS[50,0,:],difXS[50,1,:])
+
+if __name__ == "__main__":
+    main()
+
+

@@ -31,7 +31,7 @@ def main():
     totalXS,scatterXS = DataGenerators.generateElasticElectronData(10)
     xsec = XSections.XSection(totalXS[1],totalXS[0])
     diffXS = Distribution.Distribution()
-    diffXS.setDomain([0,np.pi])
+    diffXS.setDomain([-np.pi,np.pi])
     diffXS.setPdfData(partial(Distribution.diffElasticElectronXS,10))
 
     # Step 3: Add Materials
@@ -46,7 +46,7 @@ def main():
     PM.addMaterials(matMan)
     # Step 4: Add Geometry
     geoMan = Geometry.GeometryManager()
-    geo = Geometry.Geometry(dim=3,coordSys = 'cartesian', iLimits = (0,1e-6), jLimits = (-3e-6,3e-6), kLimits = (-5e-6,5e-6), coarseMesh=(1,1,1),fineI=[100],fineJ=[50],fineK=[10])
+    geo = Geometry.Geometry(dim=3,coordSys = 'cartesian', iLimits = (-1e-5,1e-5), jLimits = (-1e-5,1e-5), kLimits = (0,1e-5), coarseMesh=(1,1,1),fineI=[100],fineJ=[100],fineK=[100])
     geo.setMaterial(14)
     geoMan.addGeometry(geo)
 
@@ -58,7 +58,7 @@ def main():
     so = Source.Source()
     so.setLocation()
     so.setEnergy(1000)
-    so.setDirection(np.array([1.,0.,0.]))
+    so.setDirection(np.array([0.,0.,1.]))
     so.setParticleType()
     so.setPopulation(1000)
     soMan.addSource(so)
@@ -71,7 +71,9 @@ def main():
 
     PM.transportParticles()
 
-    tal.createGraphic()
+    tal.createGraphic(projection = 'xy')
+    tal.createGraphic(projection = 'yz')
+    tal.createGraphic(projection = 'xz')
     tal.printEdgesToFile()
     tal.printHeatMapToFile()
 

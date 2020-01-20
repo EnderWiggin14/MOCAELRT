@@ -53,6 +53,8 @@ class Distribution():
         tempParam.append(val)
         if isinstance(self.pdfData,(FUNC_TYPE,BUILTIN_FUNC_TYPE,partial)):
             weight = self.pdf(tempParam)/self.proposalPdfHandle(val)
+            if np.isinf(weight):
+                print("tempParam :", tempParam, "  pdf :", self.pdf(tempParam),"  prop PDF :",self.proposalPdfHandle(val))
         elif isinstance(self.pdfData,(list,np.ndarray)):
             weight = self.pdf(tempParam)/self.proposalPdfHandle(val)
         else:
@@ -89,7 +91,7 @@ class Distribution():
         self.domain = np.array(domain)
         if self.proposalSampleHandle is None or self.proposalPdfHandle is None:
             unifSamp = partial(np.random.uniform,low = self.domain.min(), high = self.domain.max())
-            unifPdf = partial(sci.uniform.pdf, loc = self.domain.min(), scale = self.domain.max())
+            unifPdf = partial(sci.uniform.pdf, loc = self.domain.min(), scale = self.domain.max()-self.domain.min())
             self.setProposalSampleHandle(unifSamp)
             self.setProposalPdfHandle(unifPdf)
 
@@ -100,10 +102,6 @@ class Distribution():
         self.proposalSampleHandle = func
 
     def interp(self,xStar,yVals): # should replace while loop with numpy.searchsort()
-        # i = 0
-        # length = len(self.domain)
-        # while i < length and self.domain[i] <= xStar:
-        #     i += 1
         i = np.searchsorted(self.domain,xStar,side='right')
         x1 = self.domain[i-1]
         x2 = self.domain[i]
@@ -132,5 +130,5 @@ if __name__=="__main__":
     f = diffElasticElectronXS
     a.setPdfData(f)
     print(type(a.pdfData))
-    print(a.pdf([10,100,.2*np.pi/180]))
+    print(a.pdf([10,100*TC._eV_Erg,0]))
     print("Successfully completed \a")
