@@ -69,7 +69,9 @@ class Material():
          return self.totalCrossHandle(energy)
 
     def sampleElectronScatterAngle(self,energy):
-        return self.diffCrossHandle([energy])
+        energy, weight = self.diffCrossHandle([energy])
+        weight = weight/self.sampleElectronXS(energy)
+        return energy, weight
 
 
 
