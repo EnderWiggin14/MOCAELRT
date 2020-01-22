@@ -4,7 +4,7 @@ Created on Tue Nov 12 10:08:24 2019
 
 @author: Michael Vander Wal
 """
-# import numpy as np
+import numpy as np
 # import Distribution
 # import DataGenerators
 # import XSections
@@ -31,9 +31,13 @@ class Material():
     matID = None
     electronDiffCrossHandle = None
     electronTotalCrossHandle = None
+    electronElasticCrossHandle = None
+    electronIonizationCrossHandle = None
+    electronEnergyLossHandle = None
     name = None
     zNumber = None
     atomicDensity = 1.0
+    electronPhysics = "elastic"
     def __init__(self,matID):
         self.matID = matID
         return
@@ -42,7 +46,16 @@ class Material():
         self.diffCrossHandle = handle
 
     def setElectronTotalXSHandle(self,handle):
-        self.totalCrossHandle = handle
+        self.electronTotalCrossHandle = handle
+
+    def setElectronElasticXSHandle(self,handle):
+        self.electronElasticCrossHandle = handle
+
+    def setElectronIonizationXSHandle(self,handle):
+        self.electronIonizationCrossHandle = handle
+
+    def setElectronEnergyLossHandle(self,handle):
+        self.electronEnergyLossHandle = handle
 
     def getComposition(self):
         return self.comp
@@ -66,12 +79,38 @@ class Material():
         self.atomicDensity = density
 
     def sampleElectronXS(self,energy):
-         return self.totalCrossHandle(energy)
+        if self.electronPhysics == "inelastic":
+            ionXS = self.electronIonizationCrossHandle(energy)
+            elastXS = self.electronElasticCrossHandle(energy)
+            return ionXS + elastXS
+        else:
+            return self.electronElasticCrossHandle(energy)
+
+    def setElectronPhysics(self,physics = 'elastic'):
+        self.electronPhysics = physics
+
+    def sampleElectronEnergyLoss(self,energy):
+        return self.electronEnergyLossHandle(energy)
+
 
     def sampleElectronScatterAngle(self,energy):
-        energy, weight = self.diffCrossHandle([energy])
-        weight = weight/self.sampleElectronXS(energy)
-        return energy, weight
+        elastXS = self.electronElasticCrossHandle(energy)
+        deltaEnergy = 0.
+        energyWeight = 1.
+        if self.electronPhysics == "inelastic":
+            u = np.random.uniform(0.,1.)
+            ionXS = self.electronIonizationCrossHandle(energy)
+            totalCross = ionXS + elastXS
+            if u <= ionXS/totalCross:
+                deltaEnergy,energyWeight = self.electronEnergyLossHandle(energy)
+                energyWeight = energyWeight/ionXS
+            else:
+                deltaEnergy = 0.
+                energyWeight = 1.
+        angle, locationWeight = self.diffCrossHandle([energy])
+        locationWeight = locationWeight/elastXS
+        return angle, locationWeight, deltaEnergy, energyWeight
+
 
 
 

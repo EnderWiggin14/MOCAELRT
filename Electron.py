@@ -32,8 +32,8 @@ class Electron(Particle):
 
     def sampleScatterAngle(self,matMan):
         # return Distribution.ElasticElectron(self.E)
-        angle, weight = matMan.matDict[self.matID].sampleElectronScatterAngle(self.E)
-        return angle, weight
+        angle, locationWeight, deltaEnergy, energyWeight = matMan.matDict[self.matID].sampleElectronScatterAngle(self.E)
+        return angle, locationWeight, deltaEnergy, energyWeight
 
 
 

@@ -52,7 +52,7 @@ class ParticleManager:
         j=0
         if not self.tally is None:
             while len(self.allParticles)>0 and j < self.iterationLimit:
-                print("Loop iteration : ", j, "Particles Left : ",len(self.allParticles))
+                print("Loop iteration : ", j, "-- Particles Left : ",len(self.allParticles))
                 for i in self.allParticles:
                     i.transport(self.geoManager,self.matManager)
                 self.tallyParticles()

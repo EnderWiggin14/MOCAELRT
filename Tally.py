@@ -101,28 +101,6 @@ class HeatMap(Tally):
                                 y = np.searchsorted(self.jEdges,i.loc[1])-1
                                 z = np.searchsorted(self.kEdges,i.loc[2])-1
                                 self.mesh[x,y,z] += i.wgt
-                    # while x < self.iEdges.size and self.iEdges[x] <= i.loc[0]:
-                    #     x +=1
-                    # if x == self.iEdges.size:
-                    #     flag = False
-                    # x-=1
-
-                    # while flag and y < self.jEdges.size and self.jEdges[y] <= i.loc[1]:
-                    #     y +=1
-
-                    # if y == self.jEdges.size:
-                    #     flag = False
-                    # y-=1
-
-                    # while flag and z < self.kEdges.size and self.kEdges[z] <= i.loc[2]:
-                    #     z +=1
-
-                    # if z == self.kEdges.size:
-                    #     flag = False
-                    # z-=1
-
-                    # if flag:
-                    #     self.mesh[x,y,z] += i.wgt
 
     # def printObjectToFile(self,fileName = "HeatMap.npy"):
     #     np.save(fileName,self)

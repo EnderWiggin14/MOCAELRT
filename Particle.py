@@ -19,7 +19,7 @@ class Particle(metaclass=abc.ABCMeta):
     prevLoc = None
     direc = None
     E = None
-    prevE = None
+    deltaE = None
     wgt = None
     ID = -1
     track = True
@@ -88,9 +88,11 @@ class Particle(metaclass=abc.ABCMeta):
         self.loc = newLoc
         # will need to add an energy update step for inelastic scattering
         self.matID = self.getMaterial()
-        scatterAngle, weight = self.sampleScatterAngle(matManager)
+        scatterAngle, weight, deltaEnergy, energyWeight = self.sampleScatterAngle(matManager)
         gammaAngle = np.random.uniform(0,np.pi)
         self.direc = getNewDirection(scatterAngle,gammaAngle,self.direc)
+        self.deltaE = deltaEnergy
+        self.E -= deltaEnergy
         self.wgt = self.newWgt
         self.newWgt = self.wgt*weight
         return

@@ -8,6 +8,7 @@ Created on Thu Jan  9 13:57:14 2020
 import numpy as np
 import TransportConstants as TC
 import matplotlib.pyplot as plt
+import scipy as sci
 eMass = TC._eMass
 c = TC._c
 mc2 = 1/c**2
@@ -114,6 +115,30 @@ def generateElasticElectronData(Z):
         differentialXSections.append(output)
     return totalCrossSections,differentialXSections
 
+def generateIonizationElectronData(E):
+    vel = c*(1-((E/(eMass*c**2))+1)**(-2))**.5
+    k = (2*np.pi*TC._eCharge/(TC._eMass*vel*vel))
+    omega = lambda gamma: -2*(E-gamma)+(2*E*(2*E-gamma))**.5
+    F = lambda a,b: a+b
+    s = lambda a: (1-2*a)**.5
+    phi = lambda gamma: 1
+    f = lambda gamma: 1
+    M1 = lambda a,b: (np.log(((b-a)*(1-b+a)*(1+a-s(a))*(1-a+s(a)))/(b*(1-b)*(1-a-s(a))*(1+a+s(a))))/a)+(2/(1+a))*(sci.special.ellipkinc(np.asin((1+a-2*b)/(1-a)),((1-a)/(1+a)))-sci.special.ellipkinc(np.asin((s(a))/(1-a)),((1-a)/(1+a))))
+    M2 = lambda a,b: (np.log(((b-a)*(1-b+a))/(b*(1-b)))/a)+(2/(1+a))*(sci.special.ellipkinc(np.asin((1+a-2*b)/(1-a)),((1-a)/(1+a))))
+    L = lambda a:(np.log(((1+a-s(a))*(1-a+s(a)))/((1-a-s(a))*(1+a+s(a))))/a)-(2/(1+a))*(sci.special.ellipkinc(np.asin((s(a))/(1-a)),((1-a)/(1+a))))
+    MeanFreeIon = lambda gamma: k*f(gamma)*phi(gamma)*L(gamma/E)/E
+    ion1 = lambda gamma: k*f(gamma)*phi(gamma)*M1()
+    # print(M1(3,4))
+
+    return
+
+def generateExcitationElectronData():
+    return
+
+def generateVibrationElectronData():
+    return
+
+
 def main():
     xs,difXS= generateElasticElectronData(10)
     xs = np.array(xs)
@@ -123,6 +148,7 @@ def main():
     plt.loglog(xs[0,:],xs[1,:])
     plt.show()
     plt.semilogy(difXS[50,0,:],difXS[50,1,:])
+    generateIonizationElectronData()
 
 if __name__ == "__main__":
     main()

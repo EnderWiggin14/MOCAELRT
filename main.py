@@ -40,7 +40,7 @@ def main():
     mat.setZNumber(10)
     mat.setAtomicDensity(1.0*(1/18.01)*TC._nAvogad)
     mat.setElectronScatterDistribution(diffXS.sample)
-    mat.setElectronTotalXSHandle(xsec.getXSection)
+    mat.setElectronElasticXSHandle(xsec.getXSection)
     matMan.addMaterial(mat)
 
     PM.addMaterials(matMan)
