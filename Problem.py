@@ -22,5 +22,11 @@ import DataGenerators
 
 class Problem():
 
+    partMan = None
+    soMan = None
+    matMan = None
+    geoMan = None
+    talMan = None
+
     def __init__(self):
         return

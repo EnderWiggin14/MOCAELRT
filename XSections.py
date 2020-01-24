@@ -25,10 +25,6 @@ class XSection():
         return
 
     def interp(self,xStar): # should replace while loop with numpy.searchsort()
-        # i = 0
-        # length = len(self.energyValues)
-        # while i < length and self.energyValues[i] <= xStar:
-        #     i += 1
         i = np.searchsorted(self.energyValues,xStar,side='right')
         x1 = self.energyValues[i-1]
         x2 = self.energyValues[i]

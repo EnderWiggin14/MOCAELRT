@@ -4,7 +4,13 @@ Created on Tue Nov 12 10:08:24 2019
 
 @author: Michael Vander Wal
 """
+
+
+"""
+Need to add a getMeanFreePath function to add increased abstraction/separation of tasks
+"""
 import numpy as np
+import TransportConstants as TC
 # import Distribution
 # import DataGenerators
 # import XSections
@@ -100,16 +106,18 @@ class Material():
         if self.electronPhysics == "inelastic":
             u = np.random.uniform(0.,1.)
             ionXS = self.electronIonizationCrossHandle(energy)
+            # print("ionXS  : ",ionXS)
             totalCross = ionXS + elastXS
             if u <= ionXS/totalCross:
-                deltaEnergy,energyWeight = self.electronEnergyLossHandle(energy)
+                deltaEnergy,energyWeight = self.electronEnergyLossHandle([energy])
+                # print("sampling for energy loss :: ",deltaEnergy/energy)
                 energyWeight = energyWeight/ionXS
             else:
                 deltaEnergy = 0.
                 energyWeight = 1.
         angle, locationWeight = self.diffCrossHandle([energy])
-        locationWeight = locationWeight/elastXS
-        return angle, locationWeight, deltaEnergy, energyWeight
+        locationWeight = locationWeight/elastXS*energyWeight
+        return angle, locationWeight, deltaEnergy
 
 
 

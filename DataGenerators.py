@@ -19,7 +19,8 @@ x0 = -1/np.sqrt(3)
 x1 = -x0
 
 def electronElastXS(E,Z):
-    EJ = E*eV_Erg
+    # EJ = E*eV_Erg
+    EJ = E
     vel = c*(1-((EJ/(eMass*c**2))+1)**(-2))**.5
     lightFrac = vel/c
     gamma = (1-lightFrac**2)**(-.5)
@@ -60,7 +61,8 @@ def gaussQuad(func,endPoints):
     return .5*(b-a)*(f0+f1)
 
 def diffXS(E,Z):
-    EJ = E*eV_Erg
+    # EJ = E*eV_Erg
+    EJ = E
     vel = c*(1-((EJ/(eMass*c**2))+1)**(-2))**.5
     lightFrac = vel/c
     gamma = (1-lightFrac**2)**(-.5)
@@ -101,7 +103,8 @@ def generateElasticElectronData(Z):
     stepSize = 6./nSteps
     for i in range(0,nSteps+1):
         temp = 10**(stepSize*i)
-        energyEV.append(temp)
+        # energyEV.append(temp)
+        energyEV.append(temp*eV_Erg)
 
     for i in range(0,nSteps+1):
         crossSections.append(electronElastXS(energyEV[i],Z))
@@ -138,6 +141,38 @@ def generateExcitationElectronData():
 def generateVibrationElectronData():
     return
 
+def fakeInelasticElectronXS(E):
+    EJ = E
+    k = (2*np.pi)**.5
+    # print(1e4*pow(10,-19-2*np.log10(E)))
+    diffIon = lambda gamma: pow(10,(-18-2.33*np.log10(EJ)))*(gamma*.1*EJ*k)*sci.stats.norm.pdf(gamma,.25*EJ,.1*EJ)
+    # print(diffIon(.5*E))
+    nIntegrals = 1000
+    results = np.zeros((nIntegrals))
+    intLimits = np.linspace(0,E,nIntegrals+1)
+    # intLimits = np.linspace(-1,1.,nIntegrals+1)
+    for i in range(0,nIntegrals):
+        results[i] = gaussQuad(diffIon,intLimits[i:i+2])
+
+    return results.sum()
+
+def generateFakeInelasticElectronXS():
+    energyEV = []
+    crossSections = []
+    nSteps = 100
+    stepSize = 4./nSteps
+    for i in range(0,nSteps+1):
+        temp = 10**(stepSize*i)
+        energyEV.append(temp*eV_Erg)
+    # print(energyEV)
+    for i in range(0,nSteps+1):
+        a = fakeInelasticElectronXS(energyEV[i])
+        # print('a = ',a)
+        crossSections.append(a)
+
+    totalCrossSections = [energyEV,crossSections]
+
+    return totalCrossSections
 
 def main():
     xs,difXS= generateElasticElectronData(10)

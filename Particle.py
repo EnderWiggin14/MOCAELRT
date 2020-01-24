@@ -88,7 +88,7 @@ class Particle(metaclass=abc.ABCMeta):
         self.loc = newLoc
         # will need to add an energy update step for inelastic scattering
         self.matID = self.getMaterial()
-        scatterAngle, weight, deltaEnergy, energyWeight = self.sampleScatterAngle(matManager)
+        scatterAngle, weight, deltaEnergy = self.sampleScatterAngle(matManager)
         gammaAngle = np.random.uniform(0,np.pi)
         self.direc = getNewDirection(scatterAngle,gammaAngle,self.direc)
         self.deltaE = deltaEnergy

@@ -20,11 +20,18 @@ import abc
 
 
 class TallyManager():
-
-
+    tallyList = []
 
     def __init__(self):
         return
+
+    def addTally(self,tally):
+        self.tallyList.append()
+
+    def scoreTallies(self,particleList):
+        for i in self.tallyList:
+            i.score(particleList)
+
 
 
 
@@ -44,6 +51,7 @@ class Tally(metaclass=abc.ABCMeta):
     unifDivSizes = [] # will be used if uniform == True
     varDivSizes = None # will be used if uniform == False
     uniform = None # will be true or false
+    tallyType = 'collisions'
 
     def __init__(self,mesh,uniform):
         if isinstance(mesh,Geometry.Geometry):
@@ -66,6 +74,9 @@ class Tally(metaclass=abc.ABCMeta):
     def generateTallyMesh(self):
         return
 
+    def setTallyType(self,tType = 'collisions'):
+        self.tallyType = tType
+
     @abc.abstractmethod
     def score(self):
         pass
@@ -77,30 +88,55 @@ class HeatMap(Tally):
         Tally.__init__(self,mesh,uniform)
 
     def score(self,particleList):
-        if self.uniform:
-            invXDivSize = 1/self.unifDivSizes[0]
-            invYDivSize = 1/self.unifDivSizes[1]
-            invZDivSize = 1/self.unifDivSizes[2]
-            for i in particleList:
-                if i.loc[0] >= self.xMin and i.loc[0] <= self.xMax and i.loc[1] >= self.yMin and i.loc[1] <= self.yMax and i.loc[2] >= self.zMin and i.loc[2] <= self.zMax:
-                    x = int((i.loc[0]-self.xMin)*invXDivSize)
-                    y = int((i.loc[1]-self.yMin)*invYDivSize)
-                    z = int((i.loc[2]-self.zMin)*invZDivSize)
-                    self.mesh[x,y,z] = i.wgt
-        else:
-            for i in particleList:
-                if i.track:
-                    x = 0
-                    y = 0
-                    z = 0
-                    flag = True
-                    if self.xMin <= i.loc[0] and i.loc[0] < self.xMax:
-                        if self.yMin <= i.loc[1] and i.loc[1] < self.yMax:
-                            if self.zMin <= i.loc[2] and i.loc[2] < self.zMax:
-                                x = np.searchsorted(self.iEdges,i.loc[0])-1
-                                y = np.searchsorted(self.jEdges,i.loc[1])-1
-                                z = np.searchsorted(self.kEdges,i.loc[2])-1
-                                self.mesh[x,y,z] += i.wgt
+        if self.tallyType == 'collisions':
+            if self.uniform:
+                invXDivSize = 1/self.unifDivSizes[0]
+                invYDivSize = 1/self.unifDivSizes[1]
+                invZDivSize = 1/self.unifDivSizes[2]
+                for i in particleList:
+                    if i.loc[0] >= self.xMin and i.loc[0] <= self.xMax and i.loc[1] >= self.yMin and i.loc[1] <= self.yMax and i.loc[2] >= self.zMin and i.loc[2] <= self.zMax:
+                        x = int((i.loc[0]-self.xMin)*invXDivSize)
+                        y = int((i.loc[1]-self.yMin)*invYDivSize)
+                        z = int((i.loc[2]-self.zMin)*invZDivSize)
+                        self.mesh[x,y,z] = i.wgt
+            else:
+                for i in particleList:
+                    if i.track:
+                        x = 0
+                        y = 0
+                        z = 0
+                        if self.xMin <= i.loc[0] and i.loc[0] < self.xMax:
+                            if self.yMin <= i.loc[1] and i.loc[1] < self.yMax:
+                                if self.zMin <= i.loc[2] and i.loc[2] < self.zMax:
+                                    x = np.searchsorted(self.iEdges,i.loc[0])-1
+                                    y = np.searchsorted(self.jEdges,i.loc[1])-1
+                                    z = np.searchsorted(self.kEdges,i.loc[2])-1
+                                    self.mesh[x,y,z] += i.wgt
+        elif self.tallyType == 'energy':
+            if self.uniform:
+                invXDivSize = 1/self.unifDivSizes[0]
+                invYDivSize = 1/self.unifDivSizes[1]
+                invZDivSize = 1/self.unifDivSizes[2]
+                for i in particleList:
+                    if i.loc[0] >= self.xMin and i.loc[0] <= self.xMax and i.loc[1] >= self.yMin and i.loc[1] <= self.yMax and i.loc[2] >= self.zMin and i.loc[2] <= self.zMax:
+                        x = int((i.loc[0]-self.xMin)*invXDivSize)
+                        y = int((i.loc[1]-self.yMin)*invYDivSize)
+                        z = int((i.loc[2]-self.zMin)*invZDivSize)
+                        self.mesh[x,y,z] = i.wgt
+            else:
+                for i in particleList:
+                    if i.track:
+                        x = 0
+                        y = 0
+                        z = 0
+                        if self.xMin <= i.loc[0] and i.loc[0] < self.xMax:
+                            if self.yMin <= i.loc[1] and i.loc[1] < self.yMax:
+                                if self.zMin <= i.loc[2] and i.loc[2] < self.zMax:
+                                    x = np.searchsorted(self.iEdges,i.loc[0])-1
+                                    y = np.searchsorted(self.jEdges,i.loc[1])-1
+                                    z = np.searchsorted(self.kEdges,i.loc[2])-1
+                                    self.mesh[x,y,z] += i.deltaEnergy*i.wgt
+
 
     # def printObjectToFile(self,fileName = "HeatMap.npy"):
     #     np.save(fileName,self)

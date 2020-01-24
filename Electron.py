@@ -27,13 +27,15 @@ class Electron(Particle):
     def sampleCollisionDistance(self,matMan):
         # mfpInv = (self.matID.atomicDensity)/self.xs
         mat = matMan.matDict[self.getMaterial()]
-        mfpInv = mat.atomicDensity*mat.sampleElectronXS(self.getEnergy())
+        # mfpInv = mat.atomicDensity*mat.sampleElectronXS(self.getEnergy())
+        mfpInv = mat.atomicDensity*mat.sampleElectronXS(self.E)
         return Distribution.exponential(1/mfpInv)
 
     def sampleScatterAngle(self,matMan):
         # return Distribution.ElasticElectron(self.E)
-        angle, locationWeight, deltaEnergy, energyWeight = matMan.matDict[self.matID].sampleElectronScatterAngle(self.E)
-        return angle, locationWeight, deltaEnergy, energyWeight
+        # print("______E_______ ",self.E)
+        angle, locationWeight, deltaEnergy = matMan.matDict[self.matID].sampleElectronScatterAngle(self.E)
+        return angle, locationWeight, deltaEnergy
 
 
 

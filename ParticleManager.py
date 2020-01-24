@@ -8,6 +8,7 @@ Created on Sun Nov 10 19:06:28 2019
 import Electron
 import Source
 import Geometry
+import TransportConstants as TC
 
 
 class ParticleManager:
@@ -16,7 +17,7 @@ class ParticleManager:
     geoManager = None
     matManager = None
     tally = None
-    iterationLimit = 50
+    iterationLimit = 10
 
     def __init__(self):
         return
@@ -47,6 +48,8 @@ class ParticleManager:
         for i in self.allParticles:
             i.curCell = self.geoManager.findCell(i.loc)
 
+    def setIterationLimit(self, limit = 10):
+        self.iterationLimit = limit
 
     def transportParticles(self):
         j=0
@@ -73,7 +76,7 @@ class ParticleManager:
         limit = len(self.allParticles)
         i=0
         while i < limit:
-            if not self.allParticles[i].track:
+            if not self.allParticles[i].track or self.allParticles[i].E < 30*TC._eV_Erg:
                 del self.allParticles[i]
                 limit -= 1
             else:

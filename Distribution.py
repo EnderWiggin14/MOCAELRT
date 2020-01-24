@@ -124,6 +124,11 @@ def diffElasticElectronXS(Z,EJ,theta):
 
     return ((Z*Z+Z)*TC._eCharge*TC._eCharge*TC._eCharge*TC._eCharge)/((p*vel*(1-np.cos(theta)+2*eta))**2)
 
+def fakeIonizationElectron(EJ,gamma):
+    # print("insideFakeIonization : gamma :: ", gamma, "   EJ :: ",EJ)
+    k = (2*np.pi)**.5
+    return pow(10,(-18-2.33*np.log10(EJ)))*(gamma*.1*EJ*k)*sci.norm.pdf(gamma,.25*EJ,.1*EJ)
+
 
 if __name__=="__main__":
     a = Distribution()

@@ -25,14 +25,21 @@ from functools import partial
 def main():
     # Step 1: Initialize ParticleManager
     PM = ParticleManager()
+    PM.setIterationLimit(10)
 
     # Step 2: Generate Data
     # This step will hopefully not be explicityly needed in the future
     totalXS,scatterXS = DataGenerators.generateElasticElectronData(10)
+    ionXS = DataGenerators.generateFakeInelasticElectronXS()
     xsec = XSections.XSection(totalXS[1],totalXS[0])
+
     diffXS = Distribution.Distribution()
     diffXS.setDomain([-np.pi,np.pi])
     diffXS.setPdfData(partial(Distribution.diffElasticElectronXS,10))
+    ionXSec = XSections.XSection(ionXS[1],ionXS[0])
+    ionDist = Distribution.Distribution()
+    ionDist.setDomain([0.,300.*TC._eV_Erg])
+    ionDist.setPdfData(Distribution.fakeIonizationElectron)
 
     # Step 3: Add Materials
     matMan = Material.MaterialManager()
@@ -41,6 +48,9 @@ def main():
     mat.setAtomicDensity(1.0*(1/18.01)*TC._nAvogad)
     mat.setElectronScatterDistribution(diffXS.sample)
     mat.setElectronElasticXSHandle(xsec.getXSection)
+    mat.setElectronEnergyLossHandle(ionDist.sample)
+    mat.setElectronIonizationXSHandle(ionXSec.getXSection)
+    mat.setElectronPhysics('inelastic')
     matMan.addMaterial(mat)
 
     PM.addMaterials(matMan)
