@@ -83,9 +83,10 @@ class Tally(metaclass=abc.ABCMeta):
 
 
 class HeatMap(Tally):
-
+    squaredMesh = None
     def __init__(self,mesh = None,uniform = False):
         Tally.__init__(self,mesh,uniform)
+        self.squaredMesh = np.copy(self.mesh)
 
     def score(self,particleList):
         if self.tallyType == 'collisions':
@@ -112,6 +113,7 @@ class HeatMap(Tally):
                                     y = np.searchsorted(self.jEdges,i.loc[1])-1
                                     z = np.searchsorted(self.kEdges,i.loc[2])-1
                                     self.mesh[x,y,z] += i.wgt
+                                    self.mesh[x,y,z] += i.wgt*i.wgt
         elif self.tallyType == 'energy':
             if self.uniform:
                 invXDivSize = 1/self.unifDivSizes[0]
@@ -140,6 +142,18 @@ class HeatMap(Tally):
 
     # def printObjectToFile(self,fileName = "HeatMap.npy"):
     #     np.save(fileName,self)
+    def rmsVariance(self):
+        variance = np.zeros(self.mesh.shape)
+        variance = self.squaredMesh-self.mesh**2
+        rms = variance**2
+        variance = variance.flatten()
+        count = 0
+        for i in variance:
+            if i != 0:
+                count +=1
+        rms = rms.sum()/count
+        rms = rms**.5
+        return rms
 
     def printEdgesToFile(self,fileName = "HeatMapMesh.npy"):
         sep = fileName.rpartition('.')
@@ -208,6 +222,40 @@ class HeatMap(Tally):
             return
 
         return
+
+class PathTrack(Tally):
+        pathHistory = None
+        keys = None
+
+        def __init__(self,mesh = None,uniform = False):
+            Tally.__init__(self,mesh,uniform)
+            self.pathHistory = {-1: "placeholder"}
+            self.keys = self.pathHistory.keys()
+
+        def score(self,particleList):
+            for i in particleList:
+                if not i.ID in self.keys:
+                    self.pathHistory[i.ID]=[i.prevLoc]
+                self.pathHistory[i.ID].append(i.loc)
+            self.keys = self.pathHistory.keys()
+
+        def createGraphic(self):
+            fig = plt.figure()
+            # ax = fig.add_subplot(111,projection='3d')
+            ax = Axes3D(fig)
+            self.keys = self.pathHistory.keys()
+            if  -1 in self.keys:
+                del self.pathHistory[-1]
+            self.keys = self.pathHistory.keys()
+            for i in self.keys:
+                X, Y, Z = [],[],[]
+                for j in self.pathHistory[i]:
+                    X.append(j[0])
+                    Y.append(j[1])
+                    Z.append(j[2])
+                ax.plot(np.array(X),np.array(Y),np.array(Z))
+            plt.show()
+            fig.savefig('particle_path_tracks.png',format='png',dpi=300)
 
 class TrackLength(Tally):
 

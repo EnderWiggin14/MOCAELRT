@@ -9,7 +9,10 @@ import Electron
 import Source
 import Geometry
 import TransportConstants as TC
+from multiprocessing import Pool
+import os
 
+CPU_MAX = os.cpu_count()
 
 class ParticleManager:
 
@@ -18,6 +21,7 @@ class ParticleManager:
     matManager = None
     tally = None
     iterationLimit = 10
+    nextID = 1
 
     def __init__(self):
         return
@@ -34,6 +38,7 @@ class ParticleManager:
     def addParticles(self,pType=None,nPart=None,source=None):
         if not source is None:
             self.allParticles+=source.generateParticles()
+            self.assignIDs()
         else:
             if pType == 'electron':
                 for j in range(nPart[0]):
@@ -51,6 +56,12 @@ class ParticleManager:
     def setIterationLimit(self, limit = 10):
         self.iterationLimit = limit
 
+    def assignIDs(self):
+        for i in self.allParticles:
+            if i.ID == -1:
+                i.ID = self.nextID
+            self.nextID += 1
+
     def transportParticles(self):
         j=0
         if not self.tally is None:
@@ -62,12 +73,18 @@ class ParticleManager:
                 self.cleanUpParticles()
                 j +=1
         else:
-            while len(self.allParticle) > 0 and j < self.iterationLimit:
+            while len(self.allParticles) > 0 and j < self.iterationLimit:
                 for i in self.allParticles:
                     i.transport(self.geoManager,self.matManager)
                 self.cleanUpParticles()
                 j+=1
         return
+
+    # def multiprocessTransport(self,particles):
+    #     for i in particles:
+    #         i.transport(self.geoManager,self.matManager)
+
+    #     return particles
 
     def tallyParticles(self):
         self.tally.score(self.allParticles)

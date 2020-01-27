@@ -101,22 +101,23 @@ class Material():
 
     def sampleElectronScatterAngle(self,energy):
         elastXS = self.electronElasticCrossHandle(energy)
+        ionXS = self.electronIonizationCrossHandle(energy)
+        # print("ionXS  : ",ionXS)
+        totalCross = ionXS + elastXS
         deltaEnergy = 0.
         energyWeight = 1.
         if self.electronPhysics == "inelastic":
             u = np.random.uniform(0.,1.)
-            ionXS = self.electronIonizationCrossHandle(energy)
-            # print("ionXS  : ",ionXS)
-            totalCross = ionXS + elastXS
+
             if u <= ionXS/totalCross:
                 deltaEnergy,energyWeight = self.electronEnergyLossHandle([energy])
                 # print("sampling for energy loss :: ",deltaEnergy/energy)
-                energyWeight = energyWeight/ionXS
+                energyWeight = energyWeight/totalCross
             else:
                 deltaEnergy = 0.
                 energyWeight = 1.
         angle, locationWeight = self.diffCrossHandle([energy])
-        locationWeight = locationWeight/elastXS*energyWeight
+        locationWeight = locationWeight/totalCross*energyWeight
         return angle, locationWeight, deltaEnergy
 
 

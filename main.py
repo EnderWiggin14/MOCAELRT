@@ -18,14 +18,14 @@ import TransportConstants as TC
 import XSections
 import Tally
 from functools import partial
-
+import time
 
 
 
 def main():
     # Step 1: Initialize ParticleManager
     PM = ParticleManager()
-    PM.setIterationLimit(10)
+    PM.setIterationLimit(20)
 
     # Step 2: Generate Data
     # This step will hopefully not be explicityly needed in the future
@@ -77,15 +77,23 @@ def main():
 
     # Step 6: Create and add Tally
     tal = Tally.HeatMap(geo)
+    # tal = Tally.PathTrack(geo)
     PM.addTally(tal)
-
+    timerStart = time.process_time()
     PM.transportParticles()
-
+    timerStop = time.process_time()
+    # tal.createGraphic()
     tal.createGraphic(projection = 'xy')
     tal.createGraphic(projection = 'yz')
     tal.createGraphic(projection = 'xz')
-    tal.printEdgesToFile()
-    tal.printHeatMapToFile()
+    rms = tal.rmsVariance()
+    print(rms)
+    elapsedTime = timerStop-timerStart
+    print("Elapsed Time: ",elapsedTime)
+    print("FOM: ",1/(rms*elapsedTime))
+
+    # tal.printEdgesToFile()
+    # tal.printHeatMapToFile()
 
     return
 
