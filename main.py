@@ -70,7 +70,7 @@ def main():
     so.setEnergy(1000)
     so.setDirection(np.array([0.,0.,1.]))
     so.setParticleType()
-    so.setPopulation(1000)
+    so.setPopulation(10000)
     soMan.addSource(so)
 
     PM.addParticles(source = soMan)
@@ -86,8 +86,8 @@ def main():
     tal.createGraphic(projection = 'xy')
     tal.createGraphic(projection = 'yz')
     tal.createGraphic(projection = 'xz')
-    rms = tal.rmsVariance()
-    print(rms)
+    rms = tal.rmsVariance(10000)
+    print("Root Mean Square variance: ",rms)
     elapsedTime = timerStop-timerStart
     print("Elapsed Time: ",elapsedTime)
     print("FOM: ",1/(rms*elapsedTime))

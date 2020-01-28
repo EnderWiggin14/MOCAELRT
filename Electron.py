@@ -14,7 +14,7 @@ import Distribution
 class Electron(Particle):
 # class Electron(Particle.Particle):
 
-    def __init__(self, loc = [0.,0.,0.], direc = [0.,0.,1.], enrg = 100.,pid = np.random.randint(0,9999999) ):
+    def __init__(self, loc = [0.,0.,0.], direc = [0.,0.,1.], enrg = 100., weight = 1. ,pid = -1 ):
         Particle.__init__(self,'electron',loc,direc,enrg)
         return
 

@@ -27,7 +27,7 @@ class Particle(metaclass=abc.ABCMeta):
     curCell = None
     newWgt = 1.
 
-    def __init__(self,species='electron',loc = [0.,0.,0.], direc = [0.,0.,1.], enrg = 100.,pid = -1):
+    def __init__(self,species='electron',loc = [0.,0.,0.], direc = [0.,0.,1.], enrg = 100.,weight = 1.,pid = -1):
         if isinstance(species,str):
             self.particleType = self.enumMap(species)
         else:
@@ -35,7 +35,8 @@ class Particle(metaclass=abc.ABCMeta):
         self.loc = np.array(loc)
         self.direc = np.array(direc)
         self.E = self.energyConvert(enrg)
-        self.wgt = 1.
+        self.wgt = weight
+        self.newWgt = weight
         self.ID = pid
         return
 

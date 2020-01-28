@@ -174,6 +174,22 @@ def generateFakeInelasticElectronXS():
 
     return totalCrossSections
 
+def ionization(E):
+    W = E
+    A1 = 0.94
+    A2 = 1.13
+    B1 = 2.3
+    B2 = 22.0
+    ionPot = 12.621*TC._eV_Erg
+    ionPotInv = 1/ionPot
+    rydberg = 13.6*TC._eV_Erg
+    N = 2
+    S = 4*np.pi*(5.4e-11)**2*N*(rydberg*ionPotInv)**2
+    ion1 = lambda t: (S*ionPotInv)*(A1*np.log(t)/(t+B1))*( (1+(W*ionPotInv))**-3 + ((t-W)*ionPotInv)**-3 - (((1+(W*ionPotInv))*(t-W)*ionPotInv)**-1.5) )
+    ion2 = lambda t: (S*ionPotInv)*(A2/(t+B2))*( (1+(W*ionPotInv))**-2 + ((t-W)*ionPotInv)**-2 - (((1+(W*ionPotInv))*(t-W)*ionPotInv)) )
+
+
+
 def main():
     xs,difXS= generateElasticElectronData(10)
     xs = np.array(xs)

@@ -19,8 +19,10 @@ class SourceManager():
         particles = []
         for i in self.sourceList:
                 if i.particle == "electron":
+                    # weight = 1/i.population
+                    weight = 1.
                     for j in range(i.population):
-                        particles.append(Electron.Electron(loc=i.locationGenerator(),direc=i.directionGenerator(),enrg=i.energyGenerator()))
+                        particles.append(Electron.Electron(loc=i.locationGenerator(),direc=i.directionGenerator(),enrg=i.energyGenerator(),weight = weight))
         return particles
 
 class Source():

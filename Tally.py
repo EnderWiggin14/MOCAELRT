@@ -142,9 +142,9 @@ class HeatMap(Tally):
 
     # def printObjectToFile(self,fileName = "HeatMap.npy"):
     #     np.save(fileName,self)
-    def rmsVariance(self):
+    def rmsVariance(self,initialPop):
         variance = np.zeros(self.mesh.shape)
-        variance = self.squaredMesh-self.mesh**2
+        variance = self.squaredMesh/initialPop-(self.mesh/initialPop)**2
         rms = variance**2
         variance = variance.flatten()
         count = 0
